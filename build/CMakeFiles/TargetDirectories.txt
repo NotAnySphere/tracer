@@ -1,0 +1,3 @@
+/home/matt/Documents/Projects/tracer/first_image/build/CMakeFiles/first_image.dir
+/home/matt/Documents/Projects/tracer/first_image/build/CMakeFiles/edit_cache.dir
+/home/matt/Documents/Projects/tracer/first_image/build/CMakeFiles/rebuild_cache.dir
