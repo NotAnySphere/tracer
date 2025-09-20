@@ -4,6 +4,13 @@
 #include "sphere.h"
 #include "camera.h"
 #include "unit_sampler.h"
+#include "linear_sampler.h"
+#include "circle_sampler.h"
+
+#include <memory>
+
+using std::unique_ptr;
+using std::make_unique;
 
 int main() {
 
@@ -21,8 +28,8 @@ int main() {
     
     cam.image_width = 400;
     cam.aspect_ratio = 16.0/10.0;
-    cam.sampler_distribution = unit_sampler();
-    cam.samples_per_pixel = 1;
+    cam.sampler_distribution = make_unique<circle_sampler>();
+    cam.samples_per_pixel = 9;
 
     // Render
 

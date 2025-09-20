@@ -5,7 +5,7 @@
 
 class unit_sampler : public sampler {
     public:
-        unique_ptr<std::vector<vec3>> sample(int n) const {
+        unique_ptr<std::vector<vec3>> sample(int n) const override {
             std::vector<vec3> samples = { vec3(0.0,0.0,0.0) };
             return make_unique<std::vector<vec3>>(samples);
         }

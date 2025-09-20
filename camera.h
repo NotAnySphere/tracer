@@ -12,7 +12,7 @@ class camera {
         int image_width = 100;
         double aspect_ratio = 1.0;
         int samples_per_pixel = 1;
-        sampler sampler_distribution;
+        unique_ptr<sampler> sampler_distribution;
 
         void render(const hittable& world) {
             initialize();
@@ -25,11 +25,11 @@ class camera {
                     point3 pixel_center = pixel00_loc + (pixel_delta_u * j) + (pixel_delta_v * i);
                     color pixel_color = color(0.0,0.0,0.0);
                     
-                    unique_ptr<std::vector<vec3>> sample_offsets = sampler_distribution.sample(samples_per_pixel);
+                    unique_ptr<std::vector<vec3>> sample_offsets = sampler_distribution->sample(samples_per_pixel);
                     for (size_t i = 0; i < sample_offsets->size(); i++)
                     {
                         vec3 offset = sample_offsets->at(i);
-                        vec3 sample_direction = (pixel_center + offset) - camera_center;
+                        vec3 sample_direction = (pixel_center + (offset * pixel_delta_u.x())) - camera_center;
                         ray r = ray(camera_center, sample_direction);
                         pixel_color = pixel_color + (ray_color(r, world) / samples_per_pixel);
                     }
