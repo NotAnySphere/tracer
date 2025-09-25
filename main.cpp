@@ -26,7 +26,7 @@ int main() {
     // Camera
     camera cam;
     
-    cam.image_width = 400;
+    cam.image_width = 4000;
     cam.aspect_ratio = 16.0/10.0;
     cam.sampler_distribution = make_unique<circle_sampler>();
     cam.samples_per_pixel = 9;
