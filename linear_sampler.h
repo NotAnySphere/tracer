@@ -7,21 +7,17 @@
 
 class linear_sampler : public sampler {
     public:
-        unique_ptr<std::vector<vec3>> sample(int n) const override {
+        void sample(std::vector<vec3> *samples) const override {
             
-            std::vector<vec3> samples;
-            int root = std::sqrt(n);
+            int root = std::sqrt(samples->size());
             for (size_t i = 1; i < root + 1; i++)
             {
                 for (size_t j = 1; j < root + 1; j++)
                 {
-                    samples.push_back( 
-                        (vec3(double(i), double(j), 0.0) / (root+1)) - vec3(0.5,0.5,0.0)
-                    );
+                    samples->at(root*(i-1) + (j-1)) =
+                        (vec3(double(i), double(j), 0.0) / (root+1)) - vec3(0.5,0.5,0.0);
                 }
-            }
-            
-            return make_unique<std::vector<vec3>>(samples);
+            }            
         }
 };
 

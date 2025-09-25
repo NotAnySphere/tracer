@@ -5,9 +5,9 @@
 
 class unit_sampler : public sampler {
     public:
-        unique_ptr<std::vector<vec3>> sample(int n) const override {
-            std::vector<vec3> samples = { vec3(0.0,0.0,0.0) };
-            return make_unique<std::vector<vec3>>(samples);
+        void sample(std::vector<vec3> *samples) const override {
+            samples->at(0) = vec3(0, 0, 0);
+            samples->shrink_to_fit();
         }
 };
 

@@ -6,6 +6,7 @@
 #include <vector>
 #include <memory>
 
+using std::shared_ptr;
 using std::unique_ptr;
 using std::make_unique;
 
@@ -13,11 +14,8 @@ class sampler {
     public:
         virtual ~sampler() = default;
 
-        //returns an array with n sample offsets
-        virtual unique_ptr<std::vector<vec3>> sample(int n) const {
-            std::vector<vec3> samples = { vec3(0.0,0.0,0.0) };
-            return make_unique<std::vector<vec3>>(samples);
-        };
+        // fills the vec with samples
+        virtual void sample(std::vector<vec3> *samples) const {};
 };
 
 #endif // SAMPLER_H

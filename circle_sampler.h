@@ -8,20 +8,15 @@
 
 class circle_sampler : public sampler {
     public:
-        unique_ptr<std::vector<vec3>> sample(int n) const override {
+        void sample(std::vector<vec3> *samples) const override {
             
-            std::vector<vec3> samples;
-            double angle = (2*pi)/double(n);
+            double angle = (2*pi)/double(samples->size());
 
-            for (size_t i = 1; i < n + 1; i++)
+            for (size_t i = 0; i < samples->size(); i++)
             {
-                samples.push_back( 
-                    (vec3(std::cos(i*angle)/2, std::sin(i*angle)/2, 0.0))
-                );
-            
+                samples->at(i) = 
+                    vec3(std::cos(i*angle)/2, std::sin(i*angle)/2, 0.0);
             }
-            
-            return make_unique<std::vector<vec3>>(samples);
         }
 };
 
