@@ -20,11 +20,12 @@ int main() {
     // World
     hittable_list world;
 
+    // right, up, back
     world.add(make_shared<sphere>(point3(0,0,-1), 0.5));
     world.add(make_shared<sphere>(point3(0.5,1.5,-3), 0.4));
     world.add(make_shared<sphere>(point3(0,-100.5,-1), 100));
     
-    std::array<point3, 3> verts = { point3(0,0,-0.5), point3(0,-1.5,-2), point3(0,5.5,-1) };
+    std::array<point3, 3> verts = { point3(100,100,-1), point3(-100,100,-1), point3(0,-100,-1) };
     world.add(make_shared<tri>(verts));
 
     // Camera

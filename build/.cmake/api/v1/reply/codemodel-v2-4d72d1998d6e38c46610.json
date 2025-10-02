@@ -49,8 +49,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/home/matt/Documents/Projects/tracer/first_image/build",
-		"source" : "/home/matt/Documents/Projects/tracer/first_image"
+		"build" : "/home/matt/CLionProjects/tracer/build",
+		"source" : "/home/matt/CLionProjects/tracer"
 	},
 	"version" : 
 	{

@@ -1,4 +1,4 @@
-# Install script for directory: /home/matt/Documents/Projects/tracer/first_image
+# Install script for directory: /home/matt/CLionProjects/tracer
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/matt/Documents/Projects/tracer/first_image/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/matt/CLionProjects/tracer/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -7,7 +7,7 @@
 
 class tri : public hittable {
     public:
-        tri(const std::array<point3, 3> new_verts) : verts(new_verts) {}
+        explicit tri(const std::array<point3, 3> new_verts) : verts(new_verts) {}
 
         bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
             
@@ -19,7 +19,7 @@ class tri : public hittable {
             vec3 cross_e1 = cross(r.direction(), e1);
             double det = dot(cross_e1, e2);
 
-            if ( -eps < det || det < eps)
+            if ( -eps < det && det < eps)
             {
                 return false;
             }
@@ -29,12 +29,12 @@ class tri : public hittable {
             double u = inv_det * (dot((-1) * r.direction(), cross(r.origin() - verts[0], e2)));
             double v = inv_det * (dot((-1) * r.direction(), cross(e1, r.origin() - verts[0])));
             
-            if (u <= 0 || u <= 1)
+            if (u <= 0 || 1 <= u)
             {
                 return false;
             }
             
-            if (v <= 0 || v <= 1)
+            if (v <= 0 || 1 <= v)
             {
                 return false;
             }
@@ -52,7 +52,7 @@ class tri : public hittable {
 
             rec.t = t;
             rec.p = r.at(rec.t);
-            vec3 outward_normal = cross((e1),(e2));
+            const vec3 outward_normal = cross((e1),(e2));
             rec.set_face_normal(r, unit_vector(outward_normal));
 
             return true;

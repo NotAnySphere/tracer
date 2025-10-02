@@ -1,4 +1,4 @@
-cmake --build build
+cmake --fresh -B build
 
 rm -f ./build/image.png
 ./build/first_image >> ./build/image.ppm
