@@ -33,8 +33,8 @@ int main() {
     
     cam.image_width = 400;
     cam.aspect_ratio = 16.0/10.0;
-    cam.sampler_distribution = make_unique<unit_sampler>();
-    cam.samples_per_pixel = 1;
+    cam.sampler_distribution = make_unique<circle_sampler>();
+    cam.samples_per_pixel = 1000;
 
     // Render
 
