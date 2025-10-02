@@ -26,8 +26,8 @@ class tri : public hittable {
             
             double inv_det = 1 / det;
 
-            double u = inv_det * (dot((-1) * r.direction(), cross(r.origin() - verts[0], e2)));
-            double v = inv_det * (dot((-1) * r.direction(), cross(e1, r.origin() - verts[0])));
+            double u = inv_det * (dot( r.direction(), cross(r.origin() - verts[0], e2)));
+            double v = inv_det * (dot( r.direction(), cross(e1, r.origin() - verts[0])));
             
             if (u <= 0 || 1 <= u)
             {
@@ -44,9 +44,9 @@ class tri : public hittable {
                 return false;
             }
             
-            double t = inv_det * (dot(r.origin() - verts[0], cross(e1, e2)));
+            double t = (-1) * inv_det * (dot(r.origin() - verts[0], cross(e1, e2)));
 
-            if (t <= 0) {
+            if (!ray_t.surrounds(t)) {
                 return false;
             }
 

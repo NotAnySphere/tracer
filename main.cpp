@@ -25,16 +25,16 @@ int main() {
     world.add(make_shared<sphere>(point3(0.5,1.5,-3), 0.4));
     world.add(make_shared<sphere>(point3(0,-100.5,-1), 100));
     
-    std::array<point3, 3> verts = { point3(100,100,-1), point3(-100,100,-1), point3(0,-100,-1) };
+    std::array<point3, 3> verts = { point3(0,0,-1), point3(-1,1,-1), point3(-2,-1,-1) };
     world.add(make_shared<tri>(verts));
 
     // Camera
     camera cam;
     
-    cam.image_width = 400;
+    cam.image_width = 2000;
     cam.aspect_ratio = 16.0/10.0;
     cam.sampler_distribution = make_unique<circle_sampler>();
-    cam.samples_per_pixel = 1000;
+    cam.samples_per_pixel = 10;
 
     // Render
 
