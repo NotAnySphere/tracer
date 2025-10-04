@@ -19,6 +19,9 @@ class camera {
         int samples_per_pixel = 1;
         unique_ptr<sampler> sampler_distribution;
 
+        point3 camera_center;
+
+
         camera(int width, double aspect_ratio, int samples_per_pixel, unique_ptr<sampler> sampler) {
             image_width = width;
             this->aspect_ratio= aspect_ratio;
@@ -29,7 +32,7 @@ class camera {
 
 
         void render(const hittable& world, SDL_Surface* surface) {
-
+            update_cam();
             for (int i = 0; i < image_height; i++) {
                 std::cout << "\rScanlines remaining: " << (image_height - i) << ' ' << std::flush;
                 
@@ -56,9 +59,12 @@ class camera {
             }
             std::clog << "\rDone.                 \n";
         }
+
+        void translate(const vec3 vec) {
+            camera_center += vec;
+        }
     
     private:
-        point3 camera_center;
         point3 pixel00_loc;
         vec3 pixel_delta_u;
         vec3 pixel_delta_v;
@@ -80,6 +86,23 @@ class camera {
             pixel_delta_v = viewport_v / image_height;
                 
                 
+            point3 viewport_upper_left = camera_center - vec3(0, 0, focal_length) - viewport_u/2 - viewport_v/2;
+            pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
+        }
+
+        void update_cam() {
+
+            double focal_length = 1.0;
+            double viewport_height = 2.0;
+            double viewport_width = viewport_height * (double(image_width) / image_height);
+
+            vec3 viewport_u = vec3(viewport_width, 0, 0);
+            vec3 viewport_v = vec3(0, -viewport_height, 0);
+
+            pixel_delta_u = viewport_u / image_width;
+            pixel_delta_v = viewport_v / image_height;
+
+
             point3 viewport_upper_left = camera_center - vec3(0, 0, focal_length) - viewport_u/2 - viewport_v/2;
             pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
         }

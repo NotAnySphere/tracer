@@ -11,6 +11,7 @@
 #include <memory>
 
 //#define SDL_MAIN_USE_CALLBACKS 1
+#include <format>
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 
@@ -31,7 +32,7 @@ int main() {
     world.add(make_shared<tri>(verts));
 
     // Camera
-    int WINDOW_WIDTH = 800;
+    int WINDOW_WIDTH = 400;
     double ASPECT_RATIO = 16.0 / 10.0;
 
     auto cam = camera(WINDOW_WIDTH, ASPECT_RATIO, 1, make_unique<unit_sampler>());
@@ -39,7 +40,6 @@ int main() {
     // Render
     SDL_Window *window;
     SDL_Renderer *renderer;
-    SDL_Event event;
 
     if (!SDL_Init(SDL_INIT_VIDEO)) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't initialize SDL: %s", SDL_GetError());
@@ -54,25 +54,36 @@ int main() {
     auto surface = SDL_CreateSurface(cam.image_width, cam.image_height, SDL_PIXELFORMAT_RGBA32);
 
 
-    SDL_LockSurface(surface);
-    cam.render(world, surface);
-    SDL_UnlockSurface(surface);
 
-
-    auto texture = SDL_CreateTextureFromSurface(renderer, surface);
 
     while (1) {
-        SDL_PollEvent(&event);
-        if (event.type == SDL_EVENT_QUIT) {
-            break;
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_EVENT_QUIT) {
+                return 0;
+            }
+            if (event.type == SDL_EVENT_KEY_DOWN) {
+                //cam.translate(vec3(-0.1, 0, 0));
+                cam.translate(vec3(0, 0.1, 0));
+                //cam.translate(vec3(-0.1, 0, 0));
+            }
         }
-        if (event.type == SDL_EVENT_KEY_DOWN) {
-            break;
-        }
+        SDL_LockSurface(surface);
+        cam.render(world, surface);
+        SDL_UnlockSurface(surface);
+
+        auto texture = SDL_CreateTextureFromSurface(renderer, surface);
+
         SDL_RenderClear(renderer);
-        //SDL_SetRenderDrawColor(renderer, 80, 0, 100, 255);
-        //SDL_RenderFillRect(renderer, NULL);
+        SDL_SetRenderDrawColor(renderer, 80, 0, 100, 255);
+
         SDL_RenderTexture(renderer, texture, NULL, NULL);
+
+        SDL_RenderDebugText(renderer, 5, 5, std::format("{} {} {}",
+            cam.camera_center.x(),
+            cam.camera_center.y(),
+            cam.camera_center.z()).c_str());
+
         SDL_RenderPresent(renderer);
     }
 
