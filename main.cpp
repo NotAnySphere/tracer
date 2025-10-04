@@ -19,7 +19,24 @@ using std::make_unique;
 
 
 int main() {
+    // World
+    hittable_list world;
 
+    // right, up, back
+    world.add(make_shared<sphere>(point3(0,0,-1), 0.5));
+    world.add(make_shared<sphere>(point3(0.5,1.5,-3), 0.4));
+    world.add(make_shared<sphere>(point3(0,-100.5,-1), 100));
+
+    std::array<point3, 3> verts = { point3(0,0,-1), point3(-1,1,-1), point3(-2,-1,-1) };
+    world.add(make_shared<tri>(verts));
+
+    // Camera
+    int WINDOW_WIDTH = 1920;
+    double ASPECT_RATIO = 16.0 / 9.0;
+
+    auto cam = camera(WINDOW_WIDTH, ASPECT_RATIO, 1, make_unique<unit_sampler>());
+
+    // Render
     SDL_Window *window;
     SDL_Renderer *renderer;
     SDL_Event event;
@@ -29,27 +46,10 @@ int main() {
         return 3;
     }
 
-    if (!SDL_CreateWindowAndRenderer("Hello SDL", 600, 250, 0, &window, &renderer)) {
+    if (!SDL_CreateWindowAndRenderer("Hello SDL", WINDOW_WIDTH, cam.image_height, SDL_WINDOW_RESIZABLE, &window, &renderer)) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create window and renderer: %s", SDL_GetError());
         return 3;
     }
-
-
-    // World
-    hittable_list world;
-
-    // right, up, back
-    world.add(make_shared<sphere>(point3(0,0,-1), 0.5));
-    world.add(make_shared<sphere>(point3(0.5,1.5,-3), 0.4));
-    world.add(make_shared<sphere>(point3(0,-100.5,-1), 100));
-    
-    std::array<point3, 3> verts = { point3(0,0,-1), point3(-1,1,-1), point3(-2,-1,-1) };
-    world.add(make_shared<tri>(verts));
-
-    // Camera
-    auto cam = camera(16, 16.0/10.0, 1, make_unique<unit_sampler>());
-
-    // Render
 
     auto surface = SDL_CreateSurface(cam.image_width, cam.image_height, SDL_PIXELFORMAT_RGBA32);
 
@@ -65,7 +65,10 @@ int main() {
             break;
         }
         SDL_RenderClear(renderer);
+        //SDL_SetRenderDrawColor(renderer, 80, 0, 100, 255);
+        //SDL_RenderFillRect(renderer, NULL);
         SDL_RenderTexture(renderer, texture, NULL, NULL);
+        SDL_RenderPresent(renderer);
     }
 
 
