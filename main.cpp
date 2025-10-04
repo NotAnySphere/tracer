@@ -10,13 +10,31 @@
 
 #include <memory>
 
+//#define SDL_MAIN_USE_CALLBACKS 1
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_main.h>
+
 using std::unique_ptr;
 using std::make_unique;
 
+
 int main() {
 
+    SDL_Window *window;
+    SDL_Renderer *renderer;
+    SDL_Event event;
 
-    
+    if (!SDL_Init(SDL_INIT_VIDEO)) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't initialize SDL: %s", SDL_GetError());
+        return 3;
+    }
+
+    if (!SDL_CreateWindowAndRenderer("Hello SDL", 600, 250, 0, &window, &renderer)) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create window and renderer: %s", SDL_GetError());
+        return 3;
+    }
+
+
     // World
     hittable_list world;
 
@@ -29,16 +47,27 @@ int main() {
     world.add(make_shared<tri>(verts));
 
     // Camera
-    camera cam;
-    
-    cam.image_width = 2000;
-    cam.aspect_ratio = 16.0/10.0;
-    cam.sampler_distribution = make_unique<circle_sampler>();
-    cam.samples_per_pixel = 10;
+    auto cam = camera(16, 16.0/10.0, 1, make_unique<unit_sampler>());
 
     // Render
 
-    cam.render(world);
-    
+    auto surface = SDL_CreateSurface(cam.image_width, cam.image_height, SDL_PIXELFORMAT_RGBA32);
+
+    SDL_LockSurface(surface);
+    cam.render(world, surface);
+    SDL_UnlockSurface(surface);
+
+    auto texture = SDL_CreateTextureFromSurface(renderer, surface);
+
+    while (1) {
+        SDL_PollEvent(&event);
+        if (event.type == SDL_EVENT_QUIT) {
+            break;
+        }
+        SDL_RenderClear(renderer);
+        SDL_RenderTexture(renderer, texture, NULL, NULL);
+    }
+
+
     return 0;
 }

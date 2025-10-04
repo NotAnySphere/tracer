@@ -9,20 +9,29 @@
 #include <vector>
 #include <memory>
 
+#include "SDL3/SDL_surface.h"
+
 class camera {
     public:
         int image_width = 100;
+        int image_height;
         double aspect_ratio = 1.0;
         int samples_per_pixel = 1;
         unique_ptr<sampler> sampler_distribution;
 
-        void render(const hittable& world) {
-            initialize();
-            
-            std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
+        camera(int width, double aspect_ratio, int samples_per_pixel, unique_ptr<sampler> sampler) {
+            image_width = width;
+            this->aspect_ratio= aspect_ratio;
+            this->samples_per_pixel = samples_per_pixel;
+            this->sampler_distribution = move(sampler);
+            this->initialize();
+        }
+
+
+        void render(const hittable& world, SDL_Surface* surface) {
 
             for (int i = 0; i < image_height; i++) {
-                std::clog << "\rScanlines remaining: " << (image_height - i) << ' ' << std::flush;
+                std::cout << "\rScanlines remaining: " << (image_height - i) << ' ' << std::flush;
                 
 
                 std::vector<vec3> a;
@@ -42,14 +51,13 @@ class camera {
                         pixel_color = pixel_color + (ray_color(r, world) / samples->size());
                     }
 
-                    write_color(std::cout, pixel_color);
+                    write_color(pixel_color , j, i, surface);
                 }
             }
             std::clog << "\rDone.                 \n";
         }
     
     private:
-        int image_height;
         point3 camera_center;
         point3 pixel00_loc;
         vec3 pixel_delta_u;

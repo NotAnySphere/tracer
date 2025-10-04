@@ -3,10 +3,12 @@
 
 #include "vec3.h"
 #include "interval.h"
+#include "SDL3/SDL_surface.h"
 
 using color = vec3;
 
-void write_color(std::ostream& out, const color& pixel_color) {
+void write_color(const color& pixel_color, int u, int v, SDL_Surface* surface) {
+
     auto r = pixel_color.x();
     auto g = pixel_color.y();
     auto b = pixel_color.z();
@@ -17,8 +19,9 @@ void write_color(std::ostream& out, const color& pixel_color) {
     int gbyte = int(256 * intensity.clamp(g));
     int bbyte = int(256 * intensity.clamp(b));
 
-    // Write out the pixel color components.
-    out << rbyte << ' ' << gbyte << ' ' << bbyte << '\n';
+    auto color = SDL_MapSurfaceRGB(surface, rbyte, gbyte, bbyte);
+    const auto pixels = (Uint32*)surface->pixels;
+    pixels[(u) + (v * surface->w)] = color;
 }
 
 #endif

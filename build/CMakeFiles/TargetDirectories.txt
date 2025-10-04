@@ -1,3 +1,0 @@
-/home/matt/CLionProjects/tracer/build/CMakeFiles/first_image.dir
-/home/matt/CLionProjects/tracer/build/CMakeFiles/edit_cache.dir
-/home/matt/CLionProjects/tracer/build/CMakeFiles/rebuild_cache.dir
