@@ -31,8 +31,8 @@ int main() {
     world.add(make_shared<tri>(verts));
 
     // Camera
-    int WINDOW_WIDTH = 1920;
-    double ASPECT_RATIO = 16.0 / 9.0;
+    int WINDOW_WIDTH = 800;
+    double ASPECT_RATIO = 16.0 / 10.0;
 
     auto cam = camera(WINDOW_WIDTH, ASPECT_RATIO, 1, make_unique<unit_sampler>());
 
@@ -53,15 +53,20 @@ int main() {
 
     auto surface = SDL_CreateSurface(cam.image_width, cam.image_height, SDL_PIXELFORMAT_RGBA32);
 
+
     SDL_LockSurface(surface);
     cam.render(world, surface);
     SDL_UnlockSurface(surface);
+
 
     auto texture = SDL_CreateTextureFromSurface(renderer, surface);
 
     while (1) {
         SDL_PollEvent(&event);
         if (event.type == SDL_EVENT_QUIT) {
+            break;
+        }
+        if (event.type == SDL_EVENT_KEY_DOWN) {
             break;
         }
         SDL_RenderClear(renderer);
