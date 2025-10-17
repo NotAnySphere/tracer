@@ -29,6 +29,17 @@ class interval {
             return x;
         }
 
+        interval intersection(interval other) const {
+            interval inter = interval(min,max);
+            if (inter.min < other.min) {
+                inter.min = other.min;
+            }
+            if (inter.max > other.max) {
+                inter.max = other.max;
+            }
+            return inter;
+        }
+
         static const interval empty, universe;
 };
 
