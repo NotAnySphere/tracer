@@ -43,6 +43,10 @@ class box : public hittable {
             return true;
         }
 
+        box aabb() const override {
+            return box(p1,p2);
+        }
+
     private:
         point3 p1, p2;
 };

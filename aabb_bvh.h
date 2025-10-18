@@ -13,14 +13,11 @@ class aabb_bvh : public hittable {
     public:
         std::vector<shared_ptr<hittable>> objects;
 
-        aabb_bvh() {}
-        aabb_bvh(shared_ptr<hittable> object) { add(object); }
+        aabb_bvh(std::vector<shared_ptr<hittable>> objects) { 
+            std::vector<shared_ptr<aabb_bvh>> boxes = ;
+         }
 
-        void clear() { objects.clear(); }
         
-        void add(shared_ptr<hittable> object) {
-            objects.push_back(object);
-        }
     
         bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
             bool hit = false;
