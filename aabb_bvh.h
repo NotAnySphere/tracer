@@ -1,41 +1,72 @@
 #if !defined(AABB_BVH)
 #define AABB_BVH
 
+#include "rtweekend.h"
 #include "hittable.h"
 #include "ray.h"
+#include "box.h"
 
 #include <memory>
 #include <vector>
+#include <algorithm>
 
 using std::shared_ptr;
 
 class aabb_bvh : public hittable {
     public:
-        shared_ptr<aabb_bvh> left, right;
+        shared_ptr<hittable> left, right;
+        box aabb;
 
-        aabb_bvh(std::vector<shared_ptr<hittable>> objects) { 
+        aabb_bvh(std::vector<shared_ptr<hittable>> objects, size_t start, size_t end) { 
             // uuuh
-            std::vector<shared_ptr<aabb_bvh>> boxes = ;
+            
+            int axis = int(random_double(0,2.99));
 
-            this->left = aabb_bvh()
+            auto comp = (axis == 0) ? box::compare_x
+                      : (axis == 1) ? box::compare_y
+                                    : box::compare_z;
+
+
+            // sort hittables along that axis
+            std::sort(objects.begin() + start, objects.end() + end, comp);
+
+            size_t len = end - start;
+            // split evenly into two groups
+            
+            if (len == 1) 
+            {
+                left = objects[start];
+                right = objects[start];
+                return;
+            }
+            else if (len == 2) 
+            {
+                left = objects[start];
+                right = objects[start + 1];
+                return;
+            } else {
+                int size = int(double(len) / 2.0);
+                left = make_shared<aabb_bvh>(objects, start, start + size);
+                right = make_shared<aabb_bvh>(objects, start + size, end);
+            }
+            aabb = box(left->aabb(), right->aabb());
+
         }
     
         bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
-            bool hit = false;
-            hit_record temp_rec;
-            double closest_so_far = ray_t.max;
+            if (!aabb.hit(r, ray_t, rec))
+            {
+                return false;
+            }
 
-            if (left->hit(r, interval(ray_t.min, closest_so_far), temp_rec)) {
-                hit = true;
-                closest_so_far = temp_rec.t;
-            }
-            
-            if (right->hit(r, interval(ray_t.min, closest_so_far), temp_rec)) {
-                hit = true;
-                return right->hit(r, ray_t, rec);
-            }
+            bool left_hit = left->hit(r, interval(ray_t.min, ray_t.max), rec);        
+            bool right_hit = right->hit(r, interval(ray_t.min, left_hit ? rec.t : ray_t.max ), rec);
                 
-            return left->hit(r, ray_t, rec);
+            return left_hit || right_hit;
+        }
+
+        box aabb() const override {
+            return aabb;
         }
 };
 

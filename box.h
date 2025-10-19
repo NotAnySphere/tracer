@@ -6,6 +6,7 @@
 
 class box : public hittable {
     public:
+        point3 p1, p2;
 
         box(const point3& a, const point3& b) {
             p1 = point3(a.x(),a.y(),a.z());
@@ -23,6 +24,26 @@ class box : public hittable {
                 p1.e[2] = b.z();
                 p2.e[2] = a.z();
             }
+        }
+        
+        box(const box& a, const box& b) {
+            p1 = a.p1;
+            p2 = b.p2;
+            // todo: dit juist
+        }
+
+        static bool compare(const shared_ptr<box> a, const shared_ptr<box> b, int axis) {
+            return a->p1.e[axis] < b->p1.e[axis];
+        }
+
+        static bool compare_x(const shared_ptr<box> a, const shared_ptr<box> b) {
+            return compare(a, b, 0);
+        }
+        static bool compare_y(const shared_ptr<box> a, const shared_ptr<box> b) {
+            return compare(a, b, 0);
+        }
+        static bool compare_z(const shared_ptr<box> a, const shared_ptr<box> b) {
+            return compare(a, b, 0);
         }
 
         bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
@@ -48,7 +69,6 @@ class box : public hittable {
         }
 
     private:
-        point3 p1, p2;
 };
 
 
