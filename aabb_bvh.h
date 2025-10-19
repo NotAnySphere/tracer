@@ -17,7 +17,7 @@ class aabb_bvh : public hittable {
         shared_ptr<hittable> left, right;
         box aabb;
 
-        aabb_bvh(std::vector<shared_ptr<hittable>> objects, size_t start, size_t end) { 
+        aabb_bvh(std::vector<shared_ptr<hittable>> objects, size_t start, size_t end) {
             // uuuh
             
             int axis = int(random_double(0,2.99));
@@ -37,20 +37,17 @@ class aabb_bvh : public hittable {
             {
                 left = objects[start];
                 right = objects[start];
-                return;
             }
             else if (len == 2) 
             {
                 left = objects[start];
                 right = objects[start + 1];
-                return;
             } else {
                 int size = int(double(len) / 2.0);
                 left = make_shared<aabb_bvh>(objects, start, start + size);
                 right = make_shared<aabb_bvh>(objects, start + size, end);
             }
             aabb = box(left->aabb(), right->aabb());
-
         }
     
         bool hit(const ray& r, interval ray_t, hit_record& rec) const override {

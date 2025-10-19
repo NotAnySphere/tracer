@@ -5,6 +5,8 @@
 #include "hittable.h"
 #include "array"
 
+#include <algorithm>
+
 class tri : public hittable {
     public:
         explicit tri(const std::array<point3, 3> new_verts) : verts(new_verts) {}
@@ -56,6 +58,64 @@ class tri : public hittable {
             rec.set_face_normal(r, unit_vector(outward_normal));
 
             return true;
+        }
+
+        box aabb() const override {
+            double x1 = verts[1].x();
+            if (verts[0].x() < x1)
+            {
+                x1 = verts[0].x();
+            }
+            if (verts[2].x() < x1) {
+                x1 = verts[2].x();
+            }
+
+            double y1 = verts[1].y();
+            if (verts[0].y() < y1)
+            {
+                y1 = verts[0].y();
+            }
+            if (verts[2].y() < y1) {
+                y1 = verts[2].y();
+            }
+
+            double z1 = verts[1].z();
+            if (verts[0].z() < z1)
+            {
+                z1 = verts[0].z();
+            }
+            if (verts[2].z() < z1) {
+                z1 = verts[2].z();
+            }
+
+            double x2 = verts[1].x();
+            if (verts[0].x() < x2)
+            {
+                x2 = verts[0].x();
+            }
+            if (verts[2].x() < x2) {
+                x2 = verts[2].x();
+            }
+
+            double y2 = verts[1].y();
+            if (verts[0].y() < y2)
+            {
+                y2 = verts[0].y();
+            }
+            if (verts[2].y() < y2) {
+                y2 = verts[2].y();
+            }
+
+            double z2 = verts[1].z();
+            if (verts[0].z() < z2)
+            {
+                z2 = verts[0].z();
+            }
+            if (verts[2].z() < z2) {
+                z2 = verts[2].z();
+            }
+            std::sort(verts.begin(), verts.end(),) // zoals hierboven of gwn een fatosenlijke sort, later handiger met polyhedra
+            return box(point3(x1,y1,z1), point3(x2,y2,z2));
         }
 
     private:

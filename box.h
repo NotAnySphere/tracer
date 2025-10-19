@@ -8,6 +8,11 @@ class box : public hittable {
     public:
         point3 p1, p2;
 
+        box() {
+            p1 = point3(0,0,0);
+            p2 = point3(1,1,1);
+        }
+
         box(const point3& a, const point3& b) {
             p1 = point3(a.x(),a.y(),a.z());
             p2 = point3(b.x(),b.y(),b.z());
@@ -27,9 +32,17 @@ class box : public hittable {
         }
         
         box(const box& a, const box& b) {
-            p1 = a.p1;
-            p2 = b.p2;
-            // todo: dit juist
+            p1 = point3(
+                a.p1.x() < b.p1.x() ? a.p1.x() : b.p1.x(),
+                a.p1.y() < b.p1.y() ? a.p1.y() : b.p1.y(),
+                a.p1.z() < b.p1.z() ? a.p1.z() : b.p1.z()
+            );
+
+            p2 = point3(
+                a.p2.x() > b.p2.x() ? a.p2.x() : b.p2.x(),
+                a.p2.y() > b.p2.y() ? a.p2.y() : b.p2.y(),
+                a.p2.z() > b.p2.z() ? a.p2.z() : b.p2.z()
+            );
         }
 
         static bool compare(const shared_ptr<box> a, const shared_ptr<box> b, int axis) {
