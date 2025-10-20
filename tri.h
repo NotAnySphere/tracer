@@ -5,8 +5,6 @@
 #include "hittable.h"
 #include "array"
 
-#include <algorithm>
-
 class tri : public hittable {
     public:
         explicit tri(const std::array<point3, 3> new_verts) : verts(new_verts) {}
@@ -65,26 +63,19 @@ class tri : public hittable {
             for (size_t i = 0; i < 3; i++)
             {
                 aabb.p1.e[i] = verts[0].e[i];
+                aabb.p2.e[i] = verts[0].e[i];
+                
                 for (size_t j = 1; j < 3; j++)
                 {
                     if (verts[j].e[i] < aabb.p1.e[i]) {
                         aabb.p1.e[i] = verts[j].e[i];
                     }
-                }
-                
-            }
-            
-            for (size_t i = 0; i < 3; i++)
-            {
-                aabb.p2.e[i] = verts[0].e[i];
-                for (size_t j = 1; j < 3; j++)
-                {
-                    if (aabb.p1.e[i] < verts[j].e[i]) {
-                        aabb.p1.e[i] = verts[j].e[i];
+                    if (aabb.p2.e[i] < verts[j].e[i]) {
+                        aabb.p2.e[i] = verts[j].e[i];
                     }
                 }
-                
             }
+            
             return aabb;
         }
 

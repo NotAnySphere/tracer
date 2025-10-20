@@ -36,6 +36,13 @@ class sphere : public hittable {
             return true;
         }
 
+        box aabb() const override {
+            return box(
+                point3(center.x() - radius, center.y() - radius, center.z() - radius),
+                point3(center.x() + radius, center.y() + radius, center.z() + radius)
+            );
+        }
+
     private:
         point3 center;
         double radius;

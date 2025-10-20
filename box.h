@@ -53,10 +53,10 @@ class box : public hittable {
             return compare(a, b, 0);
         }
         static bool compare_y(const shared_ptr<box> a, const shared_ptr<box> b) {
-            return compare(a, b, 0);
+            return compare(a, b, 1);
         }
         static bool compare_z(const shared_ptr<box> a, const shared_ptr<box> b) {
-            return compare(a, b, 0);
+            return compare(a, b, 2);
         }
 
         bool hit(const ray& r, interval ray_t, hit_record& rec) const override {

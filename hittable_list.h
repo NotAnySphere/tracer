@@ -6,6 +6,7 @@
 
 #include <memory>
 #include <vector>
+#include <algorithm>
 
 using std::shared_ptr;
 
@@ -36,6 +37,20 @@ class hittable_list : public hittable {
                 
             }
             return hit;
+        }
+
+        box aabb() const override {
+            if (objects.size() < 1)
+            {
+                return box();
+            }
+            
+            box aabb = objects[0]->aabb();
+            for (size_t i = 0; i < objects.size(); i++)
+            {
+                aabb = box(aabb, objects[i]->aabb());
+            }
+            return aabb;
         }
 };
 
