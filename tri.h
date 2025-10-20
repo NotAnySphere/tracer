@@ -61,61 +61,31 @@ class tri : public hittable {
         }
 
         box aabb() const override {
-            double x1 = verts[1].x();
-            if (verts[0].x() < x1)
+            box aabb = box();
+            for (size_t i = 0; i < 3; i++)
             {
-                x1 = verts[0].x();
+                aabb.p1.e[i] = verts[0].e[i];
+                for (size_t j = 1; j < 3; j++)
+                {
+                    if (verts[j].e[i] < aabb.p1.e[i]) {
+                        aabb.p1.e[i] = verts[j].e[i];
+                    }
+                }
+                
             }
-            if (verts[2].x() < x1) {
-                x1 = verts[2].x();
-            }
-
-            double y1 = verts[1].y();
-            if (verts[0].y() < y1)
+            
+            for (size_t i = 0; i < 3; i++)
             {
-                y1 = verts[0].y();
+                aabb.p2.e[i] = verts[0].e[i];
+                for (size_t j = 1; j < 3; j++)
+                {
+                    if (aabb.p1.e[i] < verts[j].e[i]) {
+                        aabb.p1.e[i] = verts[j].e[i];
+                    }
+                }
+                
             }
-            if (verts[2].y() < y1) {
-                y1 = verts[2].y();
-            }
-
-            double z1 = verts[1].z();
-            if (verts[0].z() < z1)
-            {
-                z1 = verts[0].z();
-            }
-            if (verts[2].z() < z1) {
-                z1 = verts[2].z();
-            }
-
-            double x2 = verts[1].x();
-            if (verts[0].x() < x2)
-            {
-                x2 = verts[0].x();
-            }
-            if (verts[2].x() < x2) {
-                x2 = verts[2].x();
-            }
-
-            double y2 = verts[1].y();
-            if (verts[0].y() < y2)
-            {
-                y2 = verts[0].y();
-            }
-            if (verts[2].y() < y2) {
-                y2 = verts[2].y();
-            }
-
-            double z2 = verts[1].z();
-            if (verts[0].z() < z2)
-            {
-                z2 = verts[0].z();
-            }
-            if (verts[2].z() < z2) {
-                z2 = verts[2].z();
-            }
-            std::sort(verts.begin(), verts.end(),) // zoals hierboven of gwn een fatosenlijke sort, later handiger met polyhedra
-            return box(point3(x1,y1,z1), point3(x2,y2,z2));
+            return aabb;
         }
 
     private:
