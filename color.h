@@ -1,9 +1,10 @@
 #ifndef COLOR_H
 #define COLOR_H
 
+#include "SDL3/SDL_surface.h"
+
 #include "vec3.h"
 #include "interval.h"
-#include "SDL3/SDL_surface.h"
 
 using color = vec3;
 

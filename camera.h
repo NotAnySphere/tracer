@@ -5,6 +5,7 @@
 #include "rtweekend.h"
 #include "sampler.h"
 #include "unit_sampler.h"
+#include "color.h"
 
 #include <vector>
 #include <memory>

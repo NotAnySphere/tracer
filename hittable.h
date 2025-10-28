@@ -3,7 +3,9 @@
 
 #include "vec3.h"
 #include "ray.h"
-#include "box.h"
+#include "interval.h"
+
+class box;
 
 class hit_record {
     public:

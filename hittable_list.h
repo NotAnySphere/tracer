@@ -2,7 +2,9 @@
 #define HITTABLE_LIST_H
 
 #include "hittable.h"
+#include "interval.h"
 #include "ray.h"
+#include "box.h"
 
 #include <memory>
 #include <vector>
@@ -23,22 +25,7 @@ class hittable_list : public hittable {
             objects.push_back(object);
         }
     
-        bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
-            bool hit = false;
-            hit_record temp_rec;
-            double closest_so_far = ray_t.max;
-
-            for(const auto& object : objects) {
-                if (object->hit(r, interval(ray_t.min, closest_so_far), temp_rec)) {
-                    hit = true;
-                    closest_so_far = temp_rec.t;
-                    rec = temp_rec;
-                }
-                
-            }
-            return hit;
-        }
-
+        bool hit(const ray& r, interval ray_t, hit_record& rec) const override;
         box aabb() const override {
             if (objects.size() < 1)
             {

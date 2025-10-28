@@ -1,7 +1,6 @@
 #ifndef BOX_H
 #define BOX_H
 
-#include "rtweekend.h"
 #include "hittable.h"
 
 class box : public hittable {

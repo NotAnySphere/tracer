@@ -3,7 +3,7 @@ project(first_image)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(first_image main.cpp)
+add_executable(first_image main.cpp hittable_list.cpp interval.cpp sphere.cpp)
 
 # download CPM.cmake
 file(

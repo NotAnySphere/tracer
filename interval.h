@@ -1,5 +1,4 @@
-#if !defined(INTERVAl_H)
-#define INTERVAl_H
+#pragma once
 
 #include "rtweekend.h"
 
@@ -42,8 +41,3 @@ class interval {
 
         static const interval empty, universe;
 };
-
-const interval interval::empty    = interval(+infinity, -infinity);
-const interval interval::universe = interval(-infinity, +infinity);
-
-#endif // INTERVAl_H
