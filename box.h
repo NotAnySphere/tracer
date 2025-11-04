@@ -44,17 +44,17 @@ class box : public hittable {
             );
         }
 
-        static bool compare(const shared_ptr<box> a, const shared_ptr<box> b, int axis) {
-            return a->p1.e[axis] < b->p1.e[axis];
+        static bool compare(const shared_ptr<hittable> a, const shared_ptr<hittable> b, int axis) {
+            return a->aabb().p1.e[axis] < b->aabb().p1.e[axis];
         }
 
-        static bool compare_x(const shared_ptr<box> a, const shared_ptr<box> b) {
+        static bool compare_x(const shared_ptr<hittable> a, const shared_ptr<hittable> b) {
             return compare(a, b, 0);
         }
-        static bool compare_y(const shared_ptr<box> a, const shared_ptr<box> b) {
+        static bool compare_y(const shared_ptr<hittable> a, const shared_ptr<hittable> b) {
             return compare(a, b, 1);
         }
-        static bool compare_z(const shared_ptr<box> a, const shared_ptr<box> b) {
+        static bool compare_z(const shared_ptr<hittable> a, const shared_ptr<hittable> b) {
             return compare(a, b, 2);
         }
 
