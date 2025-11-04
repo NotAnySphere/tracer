@@ -21,16 +21,19 @@ using std::make_unique;
 
 
 int main() {
-    // World
-    hittable_list world;
 
+    // World
+    std::vector<shared_ptr<hittable>> hittables = {};
+   
     // right, up, back
-    world.add(make_shared<sphere>(point3(0,0,-1), 0.5));
-    world.add(make_shared<sphere>(point3(0.5,1.5,-3), 0.4));
-    world.add(make_shared<sphere>(point3(0,-100.5,-1), 100));
+    hittables.push_back(make_shared<sphere>(point3(0,0,-1), 0.5));
+    hittables.push_back(make_shared<sphere>(point3(0.5,1.5,-3), 0.4));
+    hittables.push_back(make_shared<sphere>(point3(0,-100.5,-1), 100));
 
     std::array<point3, 3> verts = { point3(0,0,-1), point3(-1,1,-1), point3(-2,-1,-1) };
-    world.add(make_shared<tri>(verts));
+    hittables.push_back(make_shared<tri>(verts));
+
+    aabb_bvh world = aabb_bvh(hittables, 0, hittables.size() - 1);
 
     // Camera
     int WINDOW_WIDTH = 400;
