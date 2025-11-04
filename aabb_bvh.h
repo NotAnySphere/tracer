@@ -15,7 +15,7 @@ using std::shared_ptr;
 class aabb_bvh : public hittable {
     public:
         shared_ptr<hittable> left, right;
-        box aabb;
+        box bb;
 
         aabb_bvh(std::vector<shared_ptr<hittable>> objects, size_t start, size_t end) {
             // uuuh
@@ -47,11 +47,11 @@ class aabb_bvh : public hittable {
                 left = make_shared<aabb_bvh>(objects, start, start + size);
                 right = make_shared<aabb_bvh>(objects, start + size, end);
             }
-            aabb = box(left->aabb(), right->aabb());
+            bb = box(left->aabb(), right->aabb());
         }
     
         bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
-            if (!aabb.hit(r, ray_t, rec))
+            if (!bb.hit(r, ray_t, rec))
             {
                 return false;
             }
@@ -63,7 +63,7 @@ class aabb_bvh : public hittable {
         }
 
         box aabb() const override {
-            return aabb;
+            return bb;
         }
 };
 

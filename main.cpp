@@ -1,6 +1,7 @@
 #include "rtweekend.h"
 #include "hittable.h"
 #include "hittable_list.h"
+#include "aabb_bvh.h"
 #include "sphere.h"
 #include "tri.h"
 #include "camera.h"
