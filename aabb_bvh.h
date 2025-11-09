@@ -27,13 +27,16 @@ class aabb_bvh : public hittable {
                                     : box::compare_z;
 
 
+            auto sort_start = objects.begin() + start;
+            auto sort_end = objects.begin() + (end - start);
+            
             // sort hittables along that axis
-            std::sort(objects.begin() + start, objects.end() + end, comp);
+            std::sort(sort_start, sort_end, comp);
 
             size_t len = end - start;
             // split evenly into two groups
             
-            if (len == 1) 
+            if (len == 1)
             {
                 left = objects[start];
                 right = objects[start];
