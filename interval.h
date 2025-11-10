@@ -10,6 +10,11 @@ class interval {
 
         interval(double min, double max) : min(min), max(max) {}
 
+        static interval from(const double a, const double b) {
+            if (a <= b) return interval(a, b);
+            return interval(b, a);
+        }
+
         double size() {
             return max - min;
         }

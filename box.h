@@ -59,12 +59,12 @@ class box : public hittable {
         }
 
         bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
-            interval x_t = interval((p1.x() - r.origin().x())/r.direction().x(),
-                                    (p2.x() - r.origin().x())/r.direction().x());
-            interval y_t = interval((p1.y() - r.origin().y())/r.direction().y(),
-                                    (p2.y() - r.origin().y())/r.direction().y());
-            interval z_t = interval((p1.z() - r.origin().z())/r.direction().z(),
-                                    (p2.z() - r.origin().z())/r.direction().z());
+            interval x_t = interval::from((p1.x() - r.origin().x())/r.direction().x(),
+                                          (p2.x() - r.origin().x())/r.direction().x());
+            interval y_t = interval::from((p1.y() - r.origin().y())/r.direction().y(),
+                                          (p2.y() - r.origin().y())/r.direction().y());
+            interval z_t = interval::from((p1.z() - r.origin().z())/r.direction().z(),
+                                          (p2.z() - r.origin().z())/r.direction().z());
             
             interval t = x_t.intersection(y_t).intersection(z_t);
                    
