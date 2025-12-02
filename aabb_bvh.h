@@ -28,7 +28,7 @@ class aabb_bvh : public hittable {
 
 
             auto sort_start = objects.begin() + start;
-            auto sort_end = objects.begin() + (end - start);
+            auto sort_end = objects.begin() + end;
             
             // sort hittables along that axis
             std::sort(sort_start, sort_end, comp);

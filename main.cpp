@@ -20,18 +20,38 @@ using std::unique_ptr;
 using std::make_unique;
 
 
-int main() {
+int main(int argv, char** args) {
 
     // World
     std::vector<shared_ptr<hittable>> hittables = {};
    
+    for (size_t i = 0; i < 10; i++)
+    {
+        for (size_t j = 0; j < 10; j++)
+        {
+            hittables.push_back(
+                make_shared<sphere>(
+                    point3(
+                        random_double(0.2, 0.5) + (i * 1.5),
+                        random_double(0.2, 0.5),
+                        random_double(0.2, 0.5) - (j * 1.5) - 1.5
+                    ),
+                    random_double(0.2, 0.5)
+                ));
+        }
+        
+    }
+    
+
     // right, up, back
     hittables.push_back(make_shared<sphere>(point3(0,0,-1), 0.5));
     hittables.push_back(make_shared<sphere>(point3(0.5,1.5,-3), 0.4));
     hittables.push_back(make_shared<sphere>(point3(0,-100.5,-1), 100));
-
+   
     std::array<point3, 3> verts = { point3(0,0,-1), point3(-1,1,-1), point3(-2,-1,-1) };
     hittables.push_back(make_shared<tri>(verts));
+    
+
 
     aabb_bvh world = aabb_bvh(hittables, 0, hittables.size());
 
@@ -40,6 +60,7 @@ int main() {
     double ASPECT_RATIO = 16.0 / 10.0;
 
     auto cam = camera(WINDOW_WIDTH, ASPECT_RATIO, 1, make_unique<unit_sampler>());
+    cam.translate(vec3(0.0, 1.5, 0.5));
 
     // Render
     SDL_Window *window;
