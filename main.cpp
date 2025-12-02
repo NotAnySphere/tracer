@@ -10,6 +10,7 @@
 #include "circle_sampler.h"
 
 #include <memory>
+#include <sstream>
 
 //#define SDL_MAIN_USE_CALLBACKS 1
 #include <format>
@@ -21,6 +22,18 @@ using std::make_unique;
 
 
 int main(int argv, char** args) {
+
+    bool write = false;
+    if (argv > 0)
+    {
+        if (args[1][0] == 'w')
+        {
+            write = true;
+        }
+        
+        std::cout << args[1] << std::endl;
+    }
+    
 
     // World
     std::vector<shared_ptr<hittable>> hittables = {};
@@ -108,7 +121,13 @@ int main(int argv, char** args) {
             cam.camera_center.x(),
             cam.camera_center.y(),
             cam.camera_center.z()).c_str());
-
+        
+        if (write)
+        {
+            SDL_SaveBMP(surface, "./build/image.bmp");
+            return 0;
+        }
+        
         SDL_RenderPresent(renderer);
     }
 
