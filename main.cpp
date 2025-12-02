@@ -11,6 +11,7 @@
 
 #include <memory>
 #include <sstream>
+#include <chrono>
 
 //#define SDL_MAIN_USE_CALLBACKS 1
 #include <format>
@@ -22,6 +23,8 @@ using std::make_unique;
 
 
 int main(int argv, char** args) {
+
+    auto start = std::chrono::high_resolution_clock().now();
 
     bool write = false;
     if (argv > 0)
@@ -38,14 +41,14 @@ int main(int argv, char** args) {
     // World
     std::vector<shared_ptr<hittable>> hittables = {};
    
-    for (size_t i = 0; i < 10; i++)
+    for (size_t i = 0; i < 80; i++)
     {
-        for (size_t j = 0; j < 10; j++)
+        for (size_t j = 0; j < 80; j++)
         {
             hittables.push_back(
                 make_shared<sphere>(
                     point3(
-                        random_double(0.2, 0.5) + (i * 1.5),
+                        random_double(0.2, 0.5) + (i * 1.5) - 10.0,
                         random_double(0.2, 0.5),
                         random_double(0.2, 0.5) - (j * 1.5) - 1.5
                     ),
@@ -92,6 +95,8 @@ int main(int argv, char** args) {
     auto surface = SDL_CreateSurface(cam.image_width, cam.image_height, SDL_PIXELFORMAT_RGBA32);
 
 
+    auto aabb_done = std::chrono::high_resolution_clock().now();
+    std::cout << "AABB complete in: " << std::chrono::duration_cast<std::chrono::milliseconds>(aabb_done - start).count() << "ms" << std::endl;
 
 
     while (1) {
@@ -110,6 +115,9 @@ int main(int argv, char** args) {
         cam.render(world, surface);
         SDL_UnlockSurface(surface);
 
+        auto render_done = std::chrono::high_resolution_clock().now();
+        std::cout << "render complete at: " << std::chrono::duration_cast<std::chrono::milliseconds>(render_done - aabb_done).count() << "ms" << std::endl;
+
         auto texture = SDL_CreateTextureFromSurface(renderer, surface);
 
         SDL_RenderClear(renderer);
@@ -124,7 +132,7 @@ int main(int argv, char** args) {
         
         if (write)
         {
-            SDL_SaveBMP(surface, "./build/image.bmp");
+            // SDL_SaveBMP(surface, "./build/image.bmp");
             return 0;
         }
         
