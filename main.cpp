@@ -43,7 +43,7 @@ int main(int argv, char** args) {
    
     for (size_t i = 0; i < 100; i++)
     {
-        for (size_t j = 0; j < 1000; j++)
+        for (size_t j = 0; j < 100; j++)
         {
             hittables.push_back(
                 make_shared<sphere>(
@@ -71,15 +71,13 @@ int main(int argv, char** args) {
     for (auto &&hittable : hittables)
     {
         world.add(hittable);
-    }
+        }
     */
     
     aabb_bvh world = aabb_bvh(hittables, 0, hittables.size());
-    /*
-    */
 
     // Camera
-    int WINDOW_WIDTH = 400;
+    int WINDOW_WIDTH = 800;
     double ASPECT_RATIO = 16.0 / 10.0;
 
     auto cam = camera(WINDOW_WIDTH, ASPECT_RATIO, 1, make_unique<unit_sampler>());
@@ -139,7 +137,7 @@ int main(int argv, char** args) {
         
         if (write)
         {
-            // SDL_SaveBMP(surface, "./build/image.bmp");
+            SDL_SaveBMP(surface, "./build/image.bmp");
             return 0;
         }
         
