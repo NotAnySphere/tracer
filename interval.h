@@ -35,10 +35,10 @@ class interval {
 
         interval intersection(interval other) const {
             interval inter = interval(min,max);
-            if (other.min < inter.min) {
+            if (inter.min < other.min) {
                 inter.min = other.min;
             }
-            if (other.max > inter.max) {
+            if (other.max < inter.max) {
                 inter.max = other.max;
             }
             return inter;

@@ -41,9 +41,9 @@ int main(int argv, char** args) {
     // World
     std::vector<shared_ptr<hittable>> hittables = {};
    
-    for (size_t i = 0; i < 80; i++)
+    for (size_t i = 0; i < 100; i++)
     {
-        for (size_t j = 0; j < 80; j++)
+        for (size_t j = 0; j < 1000; j++)
         {
             hittables.push_back(
                 make_shared<sphere>(
@@ -58,7 +58,6 @@ int main(int argv, char** args) {
         
     }
     
-
     // right, up, back
     hittables.push_back(make_shared<sphere>(point3(0,0,-1), 0.5));
     hittables.push_back(make_shared<sphere>(point3(0.5,1.5,-3), 0.4));
@@ -67,9 +66,17 @@ int main(int argv, char** args) {
     std::array<point3, 3> verts = { point3(0,0,-1), point3(-1,1,-1), point3(-2,-1,-1) };
     hittables.push_back(make_shared<tri>(verts));
     
-
-
+    /*
+    hittable_list world = hittable_list();
+    for (auto &&hittable : hittables)
+    {
+        world.add(hittable);
+    }
+    */
+    
     aabb_bvh world = aabb_bvh(hittables, 0, hittables.size());
+    /*
+    */
 
     // Camera
     int WINDOW_WIDTH = 400;
