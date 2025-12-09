@@ -16,7 +16,8 @@ using std::optional;
 
 class aabb_bvh : public hittable {
     public:
-        optional<unique_ptr<hittable>> left, right;
+        unique_ptr<hittable> left;
+        optional<unique_ptr<hittable>> right;
         box bb;
 
         aabb_bvh(std::vector<unique_ptr<hittable>>& objects, size_t start, size_t end) {
@@ -41,18 +42,18 @@ class aabb_bvh : public hittable {
             {
                 left = std::move(objects[start]);
                 right = {};
-                bb = left.value()->aabb();
+                bb = left->aabb();
             }
             else if (len == 2) 
             {
                 left = std::move(objects[start]);
                 right = std::move(objects[start + 1]);
-                bb = box(left.value()->aabb(), right.value()->aabb());
+                bb = box(left->aabb(), right.value()->aabb());
             } else {
                 int size = int(double(len) / 2.0);
                 left = make_unique<aabb_bvh>(objects, start, start + size);
                 right = make_unique<aabb_bvh>(objects, start + size, end);
-                bb = box(left.value()->aabb(), right.value()->aabb());
+                bb = box(left->aabb(), right.value()->aabb());
             }
         }
     
@@ -68,10 +69,8 @@ class aabb_bvh : public hittable {
             bool left_hit = false;
             bool right_hit = false;
 
-            if (left.has_value())
-            {
-                left_hit = left.value()->hit(r, interval(ray_t.min, ray_t.max), rec);        
-            }
+            left_hit = left->hit(r, interval(ray_t.min, ray_t.max), rec);        
+            
             if (right.has_value())
             {
                 right_hit = right.value()->hit(r, interval(ray_t.min, left_hit ? rec.t : ray_t.max ), rec);
