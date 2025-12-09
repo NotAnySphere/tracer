@@ -9,16 +9,17 @@
 #include <memory>
 #include <vector>
 #include <algorithm>
+#include <optional>
 
 using std::shared_ptr;
+using std::optional;
 
 class aabb_bvh : public hittable {
     public:
-        shared_ptr<hittable> left, right;
+        optional<unique_ptr<hittable>> left, right;
         box bb;
 
-        aabb_bvh(std::vector<shared_ptr<hittable>> objects, size_t start, size_t end) {
-            // uuuh
+        aabb_bvh(std::vector<unique_ptr<hittable>>& objects, size_t start, size_t end) {
             
             int axis = int(random_double(0,2.99));
 
@@ -38,19 +39,21 @@ class aabb_bvh : public hittable {
             
             if (len == 1)
             {
-                left = objects[start];
-                right = objects[start];
+                left = std::move(objects[start]);
+                right = {};
+                bb = left.value()->aabb();
             }
             else if (len == 2) 
             {
-                left = objects[start];
-                right = objects[start + 1];
+                left = std::move(objects[start]);
+                right = std::move(objects[start + 1]);
+                bb = box(left.value()->aabb(), right.value()->aabb());
             } else {
                 int size = int(double(len) / 2.0);
-                left = make_shared<aabb_bvh>(objects, start, start + size);
-                right = make_shared<aabb_bvh>(objects, start + size, end);
+                left = make_unique<aabb_bvh>(objects, start, start + size);
+                right = make_unique<aabb_bvh>(objects, start + size, end);
+                bb = box(left.value()->aabb(), right.value()->aabb());
             }
-            bb = box(left->aabb(), right->aabb());
         }
     
         bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
@@ -62,9 +65,17 @@ class aabb_bvh : public hittable {
             
             // std::cout << "hit!" << std::endl;
 
-            bool left_hit = left->hit(r, interval(ray_t.min, ray_t.max), rec);        
-            bool right_hit = right->hit(r, interval(ray_t.min, left_hit ? rec.t : ray_t.max ), rec);
-                
+            bool left_hit = false;
+            bool right_hit = false;
+
+            if (left.has_value())
+            {
+                left_hit = left.value()->hit(r, interval(ray_t.min, ray_t.max), rec);        
+            }
+            if (right.has_value())
+            {
+                right_hit = right.value()->hit(r, interval(ray_t.min, left_hit ? rec.t : ray_t.max ), rec);
+            }  
             return left_hit || right_hit;
         }
 
