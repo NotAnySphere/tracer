@@ -8,6 +8,7 @@
 #include "unit_sampler.h"
 #include "linear_sampler.h"
 #include "circle_sampler.h"
+#include "obj.h"
 
 #include <memory>
 #include <sstream>
@@ -37,10 +38,10 @@ int main(int argv, char** args) {
         std::cout << args[1] << std::endl;
     }
     
-
     // World
     std::vector<unique_ptr<hittable>> hittables = {};
-   
+    
+    /*
     for (size_t i = 0; i < 100; i++)
     {
         for (size_t j = 0; j < 100; j++)
@@ -54,18 +55,28 @@ int main(int argv, char** args) {
                     ),
                     random_double(0.2, 0.5)
                 ));
+            }
+            
         }
-        
-    }
+        */
+    /*
+    */       
+    auto obj = load("../bunny.obj");
+    
+    hittable_list world = obj.list();
     
     // right, up, back
+    /*
     hittables.push_back(make_unique<sphere>(point3(0,0,-1), 0.5));
     hittables.push_back(make_unique<sphere>(point3(0.5,1.5,-3), 0.4));
     hittables.push_back(make_unique<sphere>(point3(0,-100.5,-1), 100));
-   
+    
     std::array<point3, 3> verts = { point3(0,0,-1), point3(-1,1,-1), point3(-2,-1,-1) };
     hittables.push_back(make_unique<tri>(verts));
+    */
     
+
+
     /*
     hittable_list world = hittable_list();
     for (auto &&hittable : hittables)
@@ -74,7 +85,7 @@ int main(int argv, char** args) {
         }
     */
     
-    aabb_bvh world = aabb_bvh(hittables, 0, hittables.size());
+    // aabb_bvh world = aabb_bvh(hittables, 0, hittables.size());
 
     // Camera
     int WINDOW_WIDTH = 800;
