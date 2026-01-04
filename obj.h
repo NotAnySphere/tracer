@@ -11,6 +11,7 @@
 #include "hittable_list.h"
 #include "tri.h"
 #include "box.h"
+#include "aabb_bvh.h"
 
 /*
 only supports
@@ -75,22 +76,10 @@ class object {
             return std::move(obj);
         }
 
-        /*
-        box aabb() const override {            
-            if (obj.size() < 1)
-            {
-                std::cout << "empty object!" << std::endl;
-                return box();
-            }
-            
-            box aabb = obj[0]->aabb();
-            for (auto &&i : obj)
-            {
-                aabb = box(aabb, i->aabb());
-            }
-            return aabb;
+        aabb_bvh aabb() {            
+            auto list = this->list();
+            return aabb_bvh(list, 0, list.size());
         }
-        */
 
         // void scale_by(double factor) {}; ... and others like this
 };
@@ -121,11 +110,7 @@ class obj {
             auto leading = leading_spaces(line);
             auto splitted = split(" ", leading);
             auto words = filter([] (std::string str) { return !(str.empty() || str[0] == ' '); }, splitted);
-            /*
-            auto words = filter([] (std::string str) { return str.empty() || str[0] == ' '; },
-            split(" ",
-            leading_spaces(line)));
-            */
+            
             if (words.size() < 2)
             {
                 return;
@@ -206,6 +191,9 @@ auto load(std::string filename) -> object
     {
         auto obj = get_obj(file);
         return obj.to_object();
+    } else {
+        std::cout << "unrecognized file postfix, filename: " << filename << std::endl;
+        return object();
     }
     return object();
     
