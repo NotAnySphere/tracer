@@ -38,61 +38,20 @@ int main(int argv, char** args) {
         std::cout << args[1] << std::endl;
     }
     
-    // World
-    //std::vector<unique_ptr<hittable>> hittables = {};
-    
-    /*
-    for (size_t i = 0; i < 100; i++)
-    {
-        for (size_t j = 0; j < 100; j++)
-        {
-            hittables.push_back(
-                make_unique<sphere>(
-                    point3(
-                        random_double(0.2, 0.5) + (i * 1.5) - 10.0,
-                        random_double(0.2, 0.5),
-                        random_double(0.2, 0.5) - (j * 1.5) - 1.5
-                    ),
-                    random_double(0.2, 0.5)
-                ));
-            }
-            
-        }
-        */
-    /*
-    */       
     auto obj = load("./bunny.obj");
     
+    // World
     std::vector<unique_ptr<hittable>> hittables = obj.list();
     
-    // right, up, back
-    /*
-    hittables.push_back(make_unique<sphere>(point3(0,0,-1), 0.5));
-    hittables.push_back(make_unique<sphere>(point3(0.5,1.5,-3), 0.4));
-    hittables.push_back(make_unique<sphere>(point3(0,-100.5,-1), 100));
-    
-    std::array<point3, 3> verts = { point3(0,0,-1), point3(-1,1,-1), point3(-2,-1,-1) };
-    hittables.push_back(make_unique<tri>(verts));
-    */
-    
-
-
-    /*
-    hittable_list world = hittable_list();
-    for (auto &&hittable : hittables)
-    {
-        world.add(hittable);
-        }
-    */
-    
     aabb_bvh world = aabb_bvh(hittables, 0, hittables.size());
-
+    
     // Camera
-    int WINDOW_WIDTH = 800;
+    // right, up, back
+    int WINDOW_WIDTH = 2000;
     double ASPECT_RATIO = 16.0 / 10.0;
 
     auto cam = camera(WINDOW_WIDTH, ASPECT_RATIO, 1, make_unique<unit_sampler>());
-    cam.translate(vec3(0, 0.1, 0.3));
+    cam.translate(vec3(0, 0.1, 0.2));
 
     // Render
     SDL_Window *window;
@@ -123,7 +82,7 @@ int main(int argv, char** args) {
             }
             if (event.type == SDL_EVENT_KEY_DOWN) {
                 //cam.translate(vec3(-0.1, 0, 0));
-                cam.translate(vec3(0, 0.1, 0));
+                cam.translate(vec3(0, 0.05, 0));
                 //cam.translate(vec3(-0.1, 0, 0));
             }
         }
@@ -132,7 +91,7 @@ int main(int argv, char** args) {
         SDL_UnlockSurface(surface);
 
         auto render_done = std::chrono::high_resolution_clock().now();
-        std::cout << "render complete at: " << std::chrono::duration_cast<std::chrono::milliseconds>(render_done - aabb_done).count() << "ms" << std::endl;
+        std::cout << "render complete in: " << std::chrono::duration_cast<std::chrono::milliseconds>(render_done - aabb_done).count() << "ms" << std::endl;
 
         auto texture = SDL_CreateTextureFromSurface(renderer, surface);
 
