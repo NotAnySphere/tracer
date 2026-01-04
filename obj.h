@@ -5,6 +5,7 @@
 #include <functional>
 #include <iostream>
 #include <fstream>
+#include <filesystem>
 
 #include "hittable.h"
 #include "hittable_list.h"
@@ -49,11 +50,11 @@ auto split(const std::string split, const std::string line) -> std::vector<std::
         std::size_t split_pos = line.find(split, pos);
         if (split_pos == std::string::npos)
         {
-            subs.push_back(line.substr(pos + 1, (line.length() - 1) - pos));
+            subs.push_back(line.substr(pos, (line.length() - pos)));
             break;
         }
-        subs.push_back(line.substr(pos + 1, split_pos - pos - 1));
-        pos = split_pos;
+        subs.push_back(line.substr(pos, split_pos - pos));
+        pos = split_pos + 1;
     }
     return subs;
 }
@@ -63,22 +64,15 @@ class object {
     public:
         std::vector<std::unique_ptr<hittable>> obj;
 
-        object(std::vector<std::unique_ptr<hittable>> hittables) : obj(hittables) {}
+        object(std::vector<std::unique_ptr<hittable>> hittables) : obj(std::move(hittables)) {}
 
         object() {
             std::vector<std::unique_ptr<hittable>> list = {};
             list.push_back(make_unique<box>());
         }
 
-        hittable_list list() {
-            auto list = hittable_list();
-
-            for (auto &&i : obj)
-            {
-                list.add(std::move(i));
-            }
-
-            return list;
+        std::vector<std::unique_ptr<hittable>> list() {
+            return std::move(obj);
         }
 
         /*
@@ -124,23 +118,27 @@ class obj {
         }
 
         void line(std::string line) {
+            auto leading = leading_spaces(line);
+            auto splitted = split(" ", leading);
+            auto words = filter([] (std::string str) { return !(str.empty() || str[0] == ' '); }, splitted);
+            /*
             auto words = filter([] (std::string str) { return str.empty() || str[0] == ' '; },
-                         split(" ",
-                         leading_spaces(line)));
+            split(" ",
+            leading_spaces(line)));
+            */
             if (words.size() < 2)
             {
                 return;
             }
-
             switch (words[0][0])
             {
             case '#':
                 break;
             case 'v':
-                this->get_vert(words);
+                this->verts.push_back(get_vert(words));
                 break;
             case 'f':
-                this->get_face(words);
+                this->faces.push_back(get_face(words));
                 break;            
             default:
                 break;
@@ -152,9 +150,9 @@ class obj {
 
             for (auto &&i : this->faces)
             {
-                point3 v1 = verts[i.v1];
-                point3 v2 = verts[i.v2];
-                point3 v3 = verts[i.v3];
+                point3 v1 = verts[i.v1 - 1]; // .obj vert is 1-based index
+                point3 v2 = verts[i.v2 - 1];
+                point3 v3 = verts[i.v3 - 1];
                 std::array<point3, 3> points = { v1, v2, v3 };
                 tris.push_back( make_unique<tri>(points) );
             }
@@ -178,11 +176,18 @@ auto get_obj(std::ifstream& file) -> obj
 
 auto load(std::string filename) -> object
 {
+    std::cout << "current working dir: " << std::filesystem::current_path() << std::endl;
+    if (!std::filesystem::exists(filename))
+    {
+        std::cout << "file doesn't exist, filename: " << filename << std::endl;
+        return object();
+    }
+    
     auto dot_pos = filename.find_last_of('.');
     std::string postfix = filename.substr(dot_pos + 1, filename.length() - 1 - dot_pos);
     
     std::ifstream file;
-    file.open("bunny.obj", std::ifstream::in);
+    file.open(filename, std::ifstream::in);
     
     if (!file.is_open())
     {
@@ -197,7 +202,7 @@ auto load(std::string filename) -> object
         return object();
     }
 
-    if (postfix.compare("obj"))
+    if (postfix.compare("obj") == 0)
     {
         auto obj = get_obj(file);
         return obj.to_object();

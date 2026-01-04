@@ -39,7 +39,7 @@ int main(int argv, char** args) {
     }
     
     // World
-    std::vector<unique_ptr<hittable>> hittables = {};
+    //std::vector<unique_ptr<hittable>> hittables = {};
     
     /*
     for (size_t i = 0; i < 100; i++)
@@ -61,9 +61,9 @@ int main(int argv, char** args) {
         */
     /*
     */       
-    auto obj = load("../bunny.obj");
+    auto obj = load("./bunny.obj");
     
-    hittable_list world = obj.list();
+    std::vector<unique_ptr<hittable>> hittables = obj.list();
     
     // right, up, back
     /*
@@ -85,14 +85,14 @@ int main(int argv, char** args) {
         }
     */
     
-    // aabb_bvh world = aabb_bvh(hittables, 0, hittables.size());
+    aabb_bvh world = aabb_bvh(hittables, 0, hittables.size());
 
     // Camera
     int WINDOW_WIDTH = 800;
     double ASPECT_RATIO = 16.0 / 10.0;
 
     auto cam = camera(WINDOW_WIDTH, ASPECT_RATIO, 1, make_unique<unit_sampler>());
-    cam.translate(vec3(0.0, 1.5, 0.5));
+    cam.translate(vec3(0, 0.1, 0.3));
 
     // Render
     SDL_Window *window;
