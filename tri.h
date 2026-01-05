@@ -79,8 +79,15 @@ class tri : public hittable {
             return aabb;
         }
 
+        void scale_by(double factor) override {
+            for (size_t i = 0; i < verts.size(); i++)
+            {
+                verts[i] = verts[i] * factor;
+            }
+        }
+
     private:
-        const std::array<point3, 3> verts;
+        std::array<point3, 3> verts;
 };
 
 

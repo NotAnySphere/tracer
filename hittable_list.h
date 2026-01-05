@@ -39,6 +39,14 @@ class hittable_list : public hittable {
             }
             return aabb;
         }
+
+        void scale_by(double factor) override {
+            for (auto &&i : objects)
+            {
+                i->scale_by(factor);
+            }
+            
+        }
 };
 
 #endif // HITTABLE_LIST_H

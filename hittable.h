@@ -29,6 +29,10 @@ class hittable {
         virtual bool hit(const ray& r, interval ray_t, hit_record& rec) const = 0;
 
         virtual box aabb() const = 0;
+
+        virtual void scale_by(double factor) = 0;
+        // virtual void translate_by();
+        // virtual void rotate_by();
 };
 
 #endif

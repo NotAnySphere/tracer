@@ -80,6 +80,11 @@ class box : public hittable {
             return box(p1,p2);
         }
 
+        void scale_by(double factor) override {
+            p1 = p1 * factor;
+            p2 = p2 * factor;
+        }
+
     private:
 };
 

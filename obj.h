@@ -81,7 +81,12 @@ class object {
             return aabb_bvh(list, 0, list.size());
         }
 
-        // void scale_by(double factor) {}; ... and others like this
+        void scale_by(double factor) {
+            for (auto &&i : obj)
+            {
+                i->scale_by(factor);
+            }
+        }
 };
 
 struct face {
@@ -102,7 +107,9 @@ class obj {
 
         struct face get_face(const std::vector<std::string> face_index) {
             // index 0 is "f"
-            struct face face = { std::stoi(face_index[1]), std::stoi(face_index[2]), std::stoi(face_index[3]) };
+            struct face face = {(uint16_t) std::stoi(face_index[1]),
+                                (uint16_t) std::stoi(face_index[2]),
+                                (uint16_t) std::stoi(face_index[3])};
             return face;
         }
 

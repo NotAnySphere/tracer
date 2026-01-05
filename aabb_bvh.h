@@ -11,7 +11,6 @@
 #include <algorithm>
 #include <optional>
 
-using std::shared_ptr;
 using std::optional;
 
 class aabb_bvh : public hittable {
@@ -80,6 +79,12 @@ class aabb_bvh : public hittable {
 
         box aabb() const override {
             return bb;
+        }
+        
+        void scale_by(double factor) override {
+            left->scale_by(factor);
+            if (right.has_value()) right.value()->scale_by(factor);
+            bb.scale_by(factor); 
         }
 };
 

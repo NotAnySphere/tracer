@@ -12,6 +12,11 @@ class sphere : public hittable {
 
         box aabb() const override;
 
+        void scale_by(double factor) {
+            center = center * factor;
+            radius = radius * factor;
+        }
+
     private:
         point3 center;
         double radius;

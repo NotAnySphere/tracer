@@ -39,13 +39,13 @@ int main(int argv, char** args) {
     }
     
     auto obj = load("./bunny.obj");
-    
+    obj.scale_by(2.0);
     // World
     aabb_bvh world = obj.aabb();
     
     // Camera
     // right, up, back
-    int WINDOW_WIDTH = 800;
+    int WINDOW_WIDTH = 1600;
     double ASPECT_RATIO = 16.0 / 10.0;
 
     auto cam = camera(WINDOW_WIDTH, ASPECT_RATIO, 1, make_unique<unit_sampler>());
