@@ -86,6 +86,12 @@ class aabb_bvh : public hittable {
             if (right.has_value()) right.value()->scale_by(factor);
             bb.scale_by(factor); 
         }
+
+        void translate_by(vec3 vec) override {
+            left->translate_by(vec);
+            if (right.has_value()) right.value()->translate_by(vec);
+            bb.translate_by(vec); 
+        }
 };
 
 #endif // AABB_BVH

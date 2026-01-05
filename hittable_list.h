@@ -45,7 +45,13 @@ class hittable_list : public hittable {
             {
                 i->scale_by(factor);
             }
-            
+        }
+
+        void translate_by(vec3 vec) {
+            for (auto &&i : objects)
+            {
+                i->translate_by(vec);
+            }
         }
 };
 

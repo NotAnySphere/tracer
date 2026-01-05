@@ -31,7 +31,8 @@ class hittable {
         virtual box aabb() const = 0;
 
         virtual void scale_by(double factor) = 0;
-        // virtual void translate_by();
+        
+        virtual void translate_by(vec3 vec) = 0;
         // virtual void rotate_by();
 };
 

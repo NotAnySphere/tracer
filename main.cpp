@@ -39,9 +39,9 @@ int main(int argv, char** args) {
     }
     
     auto obj = load("./bunny.obj");
-    obj.scale_by(2.0);
+    obj.scale_by(1.0);
     // World
-    aabb_bvh world = obj.aabb();
+    aabb_bvh world = obj.bvh();
     
     // Camera
     // right, up, back

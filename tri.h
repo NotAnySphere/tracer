@@ -86,6 +86,13 @@ class tri : public hittable {
             }
         }
 
+        void translate_by(vec3 vec) override {
+            for (size_t i = 0; i < verts.size(); i++)
+            {
+                verts[i] = verts[i] + vec;
+            }
+        }
+
     private:
         std::array<point3, 3> verts;
 };

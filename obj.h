@@ -76,15 +76,37 @@ class object {
             return std::move(obj);
         }
 
-        aabb_bvh aabb() {            
+        aabb_bvh bvh() {
             auto list = this->list();
             return aabb_bvh(list, 0, list.size());
         }
 
+        box aabb() {
+            if (obj.size() < 1)
+            {
+                return box();
+            }
+            
+            box aabb = obj[0]->aabb();
+            for (size_t i = 0; i < obj.size(); i++)
+            {
+                aabb = box(aabb, obj[i]->aabb());
+            }
+            return aabb;
+        }
+
         void scale_by(double factor) {
+            // get lowest point of bounding box, scale and then translate back to same point
             for (auto &&i : obj)
             {
                 i->scale_by(factor);
+            }
+        }
+
+        void translate_by(vec3 vec) {
+            for (auto &&i : obj)
+            {
+                i->translate_by(vec);
             }
         }
 };

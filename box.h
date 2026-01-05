@@ -85,6 +85,11 @@ class box : public hittable {
             p2 = p2 * factor;
         }
 
+        void translate_by(vec3 vec) {
+            p1 = p1 + vec;
+            p2 = p2 + vec;
+        }
+
     private:
 };
 

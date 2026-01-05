@@ -17,6 +17,10 @@ class sphere : public hittable {
             radius = radius * factor;
         }
 
+        void translate_by(vec3 vec) {
+            center = center + vec;
+        }
+
     private:
         point3 center;
         double radius;
