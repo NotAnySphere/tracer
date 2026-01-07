@@ -39,7 +39,6 @@ int main(int argv, char** args) {
     }
     
     auto obj = load("./bunny.obj");
-    obj.scale_by(1.0);
     // World
     aabb_bvh world = obj.bvh();
     

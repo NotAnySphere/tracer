@@ -96,11 +96,16 @@ class object {
         }
 
         void scale_by(double factor) {
-            // get lowest point of bounding box, scale and then translate back to same point
+            // get lowest point of bounding box, scale and then translate back to same reference point
+            box bb1 = aabb();
+            point3 p11 = bb1.p1;
             for (auto &&i : obj)
             {
                 i->scale_by(factor);
             }
+            box bb2 = aabb();
+            point3 p12 = bb2.p1;
+            translate_by(p11 - p12);
         }
 
         void translate_by(vec3 vec) {
