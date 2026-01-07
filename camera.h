@@ -6,6 +6,7 @@
 #include "sampler.h"
 #include "unit_sampler.h"
 #include "color.h"
+#include "thread_pool.h"
 
 #include <vector>
 #include <memory>
@@ -31,32 +32,39 @@ class camera {
             this->initialize();
         }
 
+        void write_scanline(const int height, const hittable& world, SDL_Surface* surface) {
+            std::vector<vec3> a;
+            a.resize(samples_per_pixel);
+            auto samples = std::make_unique<std::vector<vec3>>(a);
+            
+            for (int j = 0; j < image_width; j++) {
+                point3 pixel_center = pixel00_loc + (pixel_delta_u * j) + (pixel_delta_v * height);
+                color pixel_color = color(0.0,0.0,0.0);
+                
+                sampler_distribution->sample(samples.get());
+                for (size_t i = 0; i < samples->size(); i++)
+                {
+                    vec3 offset = samples->at(i);
+                    vec3 sample_direction = (pixel_center + (offset * pixel_delta_u.x())) - camera_center;
+                    ray r = ray(camera_center, sample_direction);
+                    pixel_color = pixel_color + (ray_color(r, world) / samples->size());
+                }
+                
+                write_color(pixel_color , j, height, surface);
+            }
+        }
 
         void render(const hittable& world, SDL_Surface* surface) {
             update_cam();
+            thread_pool pool(4);
             for (int i = 0; i < image_height; i++) {
-                std::cout << "\rScanlines remaining: " << (image_height - i) << ' ' << std::flush;
+                // std::cout << "\rScanlines remaining: " << (image_height - i) << ' ' << std::flush;
+                // auto task = [&](int i, hittable& world, SDL_Surface* surface){
+                auto task = [&](){
+                    write_scanline(i, world, surface);
+                };
+                pool.enqueue(task, i, std::ref(world), surface);
                 
-
-                std::vector<vec3> a;
-                a.resize(samples_per_pixel);
-                auto samples = std::make_unique<std::vector<vec3>>(a);
-                
-                for (int j = 0; j < image_width; j++) {
-                    point3 pixel_center = pixel00_loc + (pixel_delta_u * j) + (pixel_delta_v * i);
-                    color pixel_color = color(0.0,0.0,0.0);
-                    
-                    sampler_distribution->sample(samples.get());
-                    for (size_t i = 0; i < samples->size(); i++)
-                    {
-                        vec3 offset = samples->at(i);
-                        vec3 sample_direction = (pixel_center + (offset * pixel_delta_u.x())) - camera_center;
-                        ray r = ray(camera_center, sample_direction);
-                        pixel_color = pixel_color + (ray_color(r, world) / samples->size());
-                    }
-
-                    write_color(pixel_color , j, i, surface);
-                }
             }
             std::clog << "\rDone.                 \n";
         }

@@ -2,6 +2,8 @@
 #define THREAD_POOL
 
 #include <mutex>
+#include <semaphore>
+#include <atomic>
 #include <condition_variable>
 #include <queue>
 #include <thread>
@@ -9,41 +11,71 @@
 #include <functional>
 
 class thread_pool {
-    std::queue<std::function<void()>> queue;
-    std::vector<std::thread> workers;
+    public:
+    std::queue<std::function<void()>> queue {};
+    std::vector<std::jthread> workers {};
     std::mutex mutex;
-    std::condition_variable cv;
+    std::binary_semaphore work_done { 0 };
+    std::atomic_int32_t unfinished { 0 };
+    bool stop = false;
 
     thread_pool(std::size_t worker_count) {
         for (size_t i = 0; i < worker_count; i++)
         {
-            workers.emplace_back([&](void){
-        
-                while (condition)
+            workers.emplace_back([&] (const std::stop_token &stop_tok) {
+                while (!stop_tok.stop_requested())
                 {
-                    std::scoped_lock lock(mutex);
+                    std::unique_lock lock(mutex);                    
+                    if (queue.size() == 0 && stop)
+                    {
+                        return;
+                    }
                     auto task = std::move(queue.front());
                     queue.pop();
-                    std::invoke(task);
-                }
+                    lock.unlock();
                     
-                
+                    std::invoke(task);
+                    unfinished--;
+                    
+                    if (unfinished.load() == 0 && stop)
+                    {
+                        work_done.release();
+                        return;
+                    }
+                }
             });
         }
     };
 
-    ~thread_pool() {}
+    ~thread_pool() {
+        this->join();
+
+        for (auto &&worker : workers)
+        {
+            worker.request_stop();
+            worker.join();
+        }
+        
+    }
 
     template <typename F, typename... Args>
     void enqueue(F&& f, Args&&... args) {
         std::scoped_lock lock(mutex);
-        queue.push([func = std::forward<F>(f), ... largs = std::forward<Args>(args)] () {
+        queue.emplace([func = std::forward<F>(f), ... largs = std::forward<Args>(args)] () {
             std::invoke(func, largs...);
         });
-        cv.notify_one();
+        unfinished++;
+        stop = false;
     }
 
-    // void join() {}
+    void join() {
+        stop = true;
+        // impl have this thread also work maybe? so not to spin
+        while (unfinished.load() > 0)
+        {
+            work_done.acquire();
+        }   
+    }
 
 };
 

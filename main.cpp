@@ -9,6 +9,7 @@
 #include "linear_sampler.h"
 #include "circle_sampler.h"
 #include "obj.h"
+#include "thread_pool.h"
 
 #include <memory>
 #include <sstream>
