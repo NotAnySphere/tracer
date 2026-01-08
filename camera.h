@@ -56,16 +56,15 @@ class camera {
 
         void render(const hittable& world, SDL_Surface* surface) {
             update_cam();
-            thread_pool pool(4);
+            thread_pool pool(16);
             for (int i = 0; i < image_height; i++) {
-                // std::cout << "\rScanlines remaining: " << (image_height - i) << ' ' << std::flush;
-                // auto task = [&](int i, hittable& world, SDL_Surface* surface){
-                auto task = [&](){
+                auto task = [&](int i, const hittable& world, SDL_Surface* surface){
+                    std::cout << "\rScanlines remaining: " << (image_height - i) << ' ' << std::flush;
                     write_scanline(i, world, surface);
                 };
                 pool.enqueue(task, i, std::ref(world), surface);
-                
             }
+            pool.join();
             std::clog << "\rDone.                 \n";
         }
 

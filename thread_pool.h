@@ -26,9 +26,13 @@ class thread_pool {
                 while (!stop_tok.stop_requested())
                 {
                     std::unique_lock lock(mutex);                    
-                    if (queue.size() == 0 && stop)
+                    if (queue.empty())
                     {
-                        return;
+                        if (stop)
+                        {
+                            return;
+                        }
+                        continue;
                     }
                     auto task = std::move(queue.front());
                     queue.pop();
