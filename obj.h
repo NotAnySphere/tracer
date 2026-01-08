@@ -134,16 +134,24 @@ class obj {
 
         struct face get_face(const std::vector<std::string> face_index) {
             // index 0 is "f"
+            std::cout << "get faces: " << face_index[1] << face_index[2] << face_index[3] << std::endl;
+            
             struct face face = {(uint16_t) std::stoi(face_index[1]),
                                 (uint16_t) std::stoi(face_index[2]),
                                 (uint16_t) std::stoi(face_index[3])};
+            std::cout << "got faces: " << face.v1 << face.v2 << face.v3 << std::endl;
+                            
             return face;
         }
 
         void line(std::string line) {
+            std::cout << "parsing line: " << line << std::endl;
+            
             auto leading = leading_spaces(line);
             auto splitted = split(" ", leading);
             auto words = filter([] (std::string str) { return !(str.empty() || str[0] == ' '); }, splitted);
+            
+            std::cout << "got parsed: " << words.size() << std::endl;
             
             if (words.size() < 2)
             {
@@ -158,10 +166,12 @@ class obj {
                 break;
             case 'f':
                 this->faces.push_back(get_face(words));
+                std::cout << faces[faces.size()].v1 <<faces[faces.size()].v2 <<faces[faces.size()].v3 << std::endl;
                 break;            
             default:
                 break;
             }
+
         }
 
         object to_object() {

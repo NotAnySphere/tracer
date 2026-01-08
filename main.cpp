@@ -39,10 +39,11 @@ int main(int argv, char** args) {
         std::cout << args[1] << std::endl;
     }
     
-    auto obj = load("./bunny.obj");
+    auto obj = load("./teapot.obj");
+        std::cout << "teapot?" << std::endl;
+
     // World
     aabb_bvh world = obj.bvh();
-    
     // Camera
     // right, up, back
     int WINDOW_WIDTH = 1600;
