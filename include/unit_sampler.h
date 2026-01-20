@@ -1,7 +1,7 @@
 #if !defined(UNIT_SAMPLER_H)
 #define UNIT_SAMPLER_H
 
-#include "sampler.h"
+#include "../include/sampler.h"
 
 class unit_sampler : public sampler {
     public:

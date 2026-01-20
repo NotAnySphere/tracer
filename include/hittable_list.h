@@ -1,10 +1,10 @@
 #if !defined(HITTABLE_LIST_H)
 #define HITTABLE_LIST_H
 
-#include "hittable.h"
-#include "interval.h"
-#include "ray.h"
-#include "box.h"
+#include "../include/hittable.h"
+#include "../include/interval.h"
+#include "../include/ray.h"
+#include "../include/box.h"
 
 #include <memory>
 #include <vector>

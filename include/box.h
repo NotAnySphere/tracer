@@ -1,7 +1,7 @@
 #ifndef BOX_H
 #define BOX_H
 
-#include "hittable.h"
+#include "../include/hittable.h"
 
 class box : public hittable {
     public:

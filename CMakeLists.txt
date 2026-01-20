@@ -3,7 +3,7 @@ project(first_image)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(first_image main.cpp hittable_list.cpp interval.cpp sphere.cpp)
+add_executable(first_image src/main.cpp src/hittable_list.cpp src/interval.cpp src/sphere.cpp)
 
 add_library(utils src/utils/thread_pool.cpp)      
 

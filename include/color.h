@@ -3,8 +3,8 @@
 
 #include "SDL3/SDL_surface.h"
 
-#include "vec3.h"
-#include "interval.h"
+#include "../include/vec3.h"
+#include "../include/interval.h"
 
 using color = vec3;
 

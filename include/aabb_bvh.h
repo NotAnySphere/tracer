@@ -1,10 +1,10 @@
 #if !defined(AABB_BVH)
 #define AABB_BVH
 
-#include "rtweekend.h"
-#include "hittable.h"
-#include "ray.h"
-#include "box.h"
+#include "../include/rtweekend.h"
+#include "../include/hittable.h"
+#include "../include/ray.h"
+#include "../include/box.h"
 
 #include <memory>
 #include <vector>

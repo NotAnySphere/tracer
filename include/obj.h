@@ -7,11 +7,11 @@
 #include <fstream>
 #include <filesystem>
 
-#include "hittable.h"
-#include "hittable_list.h"
-#include "tri.h"
-#include "box.h"
-#include "aabb_bvh.h"
+#include "../include/hittable.h"
+#include "../include/hittable_list.h"
+#include "../include/tri.h"
+#include "../include/box.h"
+#include "../include/aabb_bvh.h"
 
 /*
 only supports

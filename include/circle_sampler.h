@@ -1,8 +1,8 @@
 #if !defined(CIRCLE_SAMPLER_H)
 #define CIRCLE_SAMPLER_H
 
-#include "sampler.h"
-#include "rtweekend.h"
+#include "../include/sampler.h"
+#include "../include/rtweekend.h"
 
 #include <cmath>
 

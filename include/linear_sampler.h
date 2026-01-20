@@ -1,7 +1,7 @@
 #if !defined(LINEAR_SAMPLER_H)
 #define LINEAR_SAMPLER_H
 
-#include "sampler.h"
+#include "../include/sampler.h"
 
 #include <cmath>
 

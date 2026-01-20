@@ -1,12 +1,12 @@
 #if !defined(CAMERA_H)
 #define CAMERA_H
 
-#include "hittable.h"
-#include "rtweekend.h"
-#include "sampler.h"
-#include "unit_sampler.h"
-#include "color.h"
-#include "include/utils/thread_pool.hpp"
+#include "../include/hittable.h"
+#include "../include/rtweekend.h"
+#include "../include/sampler.h"
+#include "../include/unit_sampler.h"
+#include "../include/color.h"
+#include "../include/utils/thread_pool.hpp"
 
 #include <vector>
 #include <memory>

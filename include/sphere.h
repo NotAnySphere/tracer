@@ -1,8 +1,8 @@
 #ifndef SPHERE_H
 #define SPHERE_H
 
-#include "rtweekend.h"
-#include "hittable.h"
+#include "../include/rtweekend.h"
+#include "../include/hittable.h"
 
 class sphere : public hittable {
     public:

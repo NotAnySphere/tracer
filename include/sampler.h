@@ -1,7 +1,7 @@
 #if !defined(SAMPLER_H)
 #define SAMPLER_H
 
-#include "vec3.h"
+#include "../include/vec3.h"
 
 #include <vector>
 #include <memory>

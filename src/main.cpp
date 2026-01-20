@@ -1,14 +1,14 @@
-#include "rtweekend.h"
-#include "hittable.h"
-#include "hittable_list.h"
-#include "aabb_bvh.h"
-#include "sphere.h"
-#include "tri.h"
-#include "camera.h"
-#include "unit_sampler.h"
-#include "linear_sampler.h"
-#include "circle_sampler.h"
-#include "obj.h"
+#include "../include/rtweekend.h"
+#include "../include/hittable.h"
+#include "../include/hittable_list.h"
+#include "../include/aabb_bvh.h"
+#include "../include/sphere.h"
+#include "../include/tri.h"
+#include "../include/camera.h"
+#include "../include/unit_sampler.h"
+#include "../include/linear_sampler.h"
+#include "../include/circle_sampler.h"
+#include "../include/obj.h"
 
 #include <memory>
 #include <sstream>
@@ -38,7 +38,7 @@ int main(int argv, char** args) {
         std::cout << args[1] << std::endl;
     }
     
-    auto obj = load("./bunny.obj");
+    auto obj = load("./models/bunny.obj");
 
     // World
     aabb_bvh world = obj.bvh();

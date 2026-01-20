@@ -1,6 +1,6 @@
 #include <memory>
 
-#include "hittable_list.h"
+#include "../include/hittable_list.h"
 
 bool hittable_list::hit(const ray& r, interval ray_t, hit_record& rec) const {
     bool hit = false;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "rtweekend.h"
+#include "../include/rtweekend.h"
 
 class interval {
     public:

@@ -1,8 +1,8 @@
 #if !defined(TRI_H)
 #define TRI_H
 
-#include "rtweekend.h"
-#include "hittable.h"
+#include "../include/rtweekend.h"
+#include "../include/hittable.h"
 #include "array"
 
 class tri : public hittable {
