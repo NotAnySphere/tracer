@@ -10,6 +10,8 @@
 #include "../include/circle_sampler.h"
 #include "../include/obj.h"
 
+#include "../include/utils/thread_pool.hpp"
+
 #include <memory>
 #include <sstream>
 #include <chrono>
@@ -38,17 +40,37 @@ int main(int argv, char** args) {
         std::cout << args[1] << std::endl;
     }
     
-    auto obj = load("./models/bunny.obj");
-
+    auto obj1 = load("./models/bunny.obj");
+    
+    
+    std::vector<unique_ptr<hittable>> bunnies = {};
+    bunnies.reserve(9);
+    auto pool = thread_pool(4);
+    for (size_t i = 0; i < 3; i++)
+    {
+        for (size_t j = 0; j < 3; j++)
+        {
+            auto task = [&](size_t i, size_t j) {
+                std::cout << "reading bunny "<< (i * 3) + j << "\n";
+                auto bunny = load("./models/bunny.obj");
+                bunny.translate_by({((double)i) / 5.0,
+                                    0,
+                                    ((double)j) / 5.0});
+                bunnies.emplace(bunnies.begin() + (i * 3) + j, make_unique<aabb_bvh>(bunny.bvh()));
+            };
+            pool.enqueue(task, i, j);
+        }
+    }
+    pool.join();
     // World
-    aabb_bvh world = obj.bvh();
+    aabb_bvh world = aabb_bvh(bunnies, 0, bunnies.size());
     // Camera
     // right, up, back
     int WINDOW_WIDTH = 1600;
     double ASPECT_RATIO = 16.0 / 10.0;
 
     auto cam = camera(WINDOW_WIDTH, ASPECT_RATIO, 1, make_unique<unit_sampler>());
-    cam.translate(vec3(0, 0.1, 0.2));
+    cam.translate(vec3(0, 0.3, 0.6));
 
     // Render
     SDL_Window *window;
