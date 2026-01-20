@@ -9,7 +9,6 @@
 #include "linear_sampler.h"
 #include "circle_sampler.h"
 #include "obj.h"
-#include "thread_pool.h"
 
 #include <memory>
 #include <sstream>
@@ -39,8 +38,7 @@ int main(int argv, char** args) {
         std::cout << args[1] << std::endl;
     }
     
-    auto obj = load("./teapot.obj");
-        std::cout << "teapot?" << std::endl;
+    auto obj = load("./bunny.obj");
 
     // World
     aabb_bvh world = obj.bvh();

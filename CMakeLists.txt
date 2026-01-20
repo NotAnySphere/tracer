@@ -5,6 +5,8 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(first_image main.cpp hittable_list.cpp interval.cpp sphere.cpp)
 
+add_library(utils src/utils/thread_pool.cpp)      
+
 # download CPM.cmake
 file(
   DOWNLOAD
@@ -19,4 +21,7 @@ include(${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake)
 CPMAddPackage("gh:libsdl-org/SDL#main")
 
 
-target_link_libraries(first_image PRIVATE SDL3::SDL3)
+target_link_libraries(first_image
+                      PRIVATE 
+                      SDL3::SDL3
+                      utils)

@@ -6,7 +6,7 @@
 #include "sampler.h"
 #include "unit_sampler.h"
 #include "color.h"
-#include "thread_pool.h"
+#include "include/utils/thread_pool.hpp"
 
 #include <vector>
 #include <memory>
