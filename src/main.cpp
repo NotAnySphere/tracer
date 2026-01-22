@@ -44,8 +44,8 @@ int main(int argv, char** args) {
     
     
     std::vector<unique_ptr<hittable>> bunnies = {};
-    bunnies.reserve(9);
-    auto pool = thread_pool(4);
+    bunnies.resize(9);
+    auto pool = thread_pool(8);
     for (size_t i = 0; i < 3; i++)
     {
         for (size_t j = 0; j < 3; j++)
@@ -56,7 +56,7 @@ int main(int argv, char** args) {
                 bunny.translate_by({((double)i) / 5.0,
                                     0,
                                     ((double)j) / 5.0});
-                bunnies.emplace(bunnies.begin() + (i * 3) + j, make_unique<aabb_bvh>(bunny.bvh()));
+                bunnies[(i * 3) + j] = make_unique<aabb_bvh>(bunny.bvh());
             };
             pool.enqueue(task, i, j);
         }
