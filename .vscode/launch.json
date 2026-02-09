@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/build/first_image",
             "cwd": "${workspaceFolder}",
-            "args": ["write"],
+            "args": [""],
             
             "MIMode": "gdb",
             "setupCommands": [

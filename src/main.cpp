@@ -11,6 +11,7 @@
 #include "../include/obj.h"
 
 #include "../include/utils/thread_pool.hpp"
+// #include "../include/utils/arena.hpp"
 
 #include <memory>
 #include <sstream>
@@ -30,7 +31,7 @@ int main(int argv, char** args) {
     auto start = std::chrono::high_resolution_clock().now();
 
     bool write = false;
-    if (argv > 0)
+    if (argv > 1)
     {
         if (args[1][0] == 'w')
         {

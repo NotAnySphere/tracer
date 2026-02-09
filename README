@@ -1,1 +1,5 @@
 https://raytracing.github.io/books/RayTracingInOneWeekend.html#outputanimage/theppmimageformat
+
+TODO:
+    - Z order curve thingymabob?
+    - arena allocation
