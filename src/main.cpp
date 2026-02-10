@@ -11,7 +11,7 @@
 #include "../include/obj.h"
 
 #include "../include/utils/thread_pool.hpp"
-// #include "../include/utils/arena.hpp"
+#include "../include/utils/arena.hpp"
 
 #include <memory>
 #include <sstream>
@@ -46,13 +46,17 @@ int main(int argv, char** args) {
     
     std::vector<unique_ptr<hittable>> bunnies = {};
     bunnies.resize(9);
+    std::vector<unique_ptr<arena>> arenas = {};
+    arenas.resize(9);
     auto pool = thread_pool(8);
     for (size_t i = 0; i < 3; i++)
     {
         for (size_t j = 0; j < 3; j++)
         {
             auto task = [&](size_t i, size_t j) {
+                arena
                 std::cout << "reading bunny "<< (i * 3) + j << "\n";
+                // arena alloc = arena(512);
                 auto bunny = load("./models/bunny.obj");
                 bunny.translate_by({((double)i) / 5.0,
                                     0,

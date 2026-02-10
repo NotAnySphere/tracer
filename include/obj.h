@@ -12,6 +12,7 @@
 #include "../include/tri.h"
 #include "../include/box.h"
 #include "../include/aabb_bvh.h"
+#include "../include/utils/arena.hpp"
 
 /*
 only supports
@@ -72,17 +73,16 @@ auto split(const std::string split, const std::string line) -> std::vector<std::
 
 class object {
     public:
-        std::vector<std::unique_ptr<hittable>> obj;
+        std::vector<hittable*> obj{};
 
-        object(std::vector<std::unique_ptr<hittable>> hittables) : obj(std::move(hittables)) {}
+        object(std::vector<hittable*> hittables) : obj(hittables) {}
 
         object() {
-            std::vector<std::unique_ptr<hittable>> list = {};
-            list.push_back(make_unique<box>());
+            obj.push_back(&box());
         }
 
-        std::vector<std::unique_ptr<hittable>> list() {
-            return std::move(obj);
+        std::vector<hittable*> list() {
+            return obj;
         }
 
         aabb_bvh bvh() {
@@ -176,7 +176,7 @@ class obj {
 
         }
 
-        object to_object() {
+        object to_object(arena& alloc) {
             std::vector<std::unique_ptr<hittable>> tris = {};
 
             for (auto &&i : this->faces)
@@ -185,7 +185,9 @@ class obj {
                 point3 v2 = verts[i.v2 - 1];
                 point3 v3 = verts[i.v3 - 1];
                 std::array<point3, 3> points = { v1, v2, v3 };
-                tris.push_back( make_unique<tri>(points) );
+                alloc.alloc_item(sizeof(std::array<point3, 3>))
+                
+                tris.push_back( (points) );
             }
 
             return tris;
@@ -193,9 +195,9 @@ class obj {
 };
 
 
-auto get_obj(std::ifstream& file) -> obj
+auto get_obj(std::ifstream& file, arena& alloc) -> obj
 {
-    obj parsed = {};
+    obj parsed = obj(alloc);
     
     std::string read_line;
     while (getline(file, read_line))
@@ -205,7 +207,7 @@ auto get_obj(std::ifstream& file) -> obj
     return parsed;
 }
 
-auto load(std::string filename) -> object
+auto load(std::string filename, arena& alloc) -> object
 {
     std::cout << "current working dir: " << std::filesystem::current_path() << std::endl;
     if (!std::filesystem::exists(filename))
@@ -235,7 +237,7 @@ auto load(std::string filename) -> object
 
     if (postfix.compare("obj") == 0)
     {
-        auto obj = get_obj(file);
+        auto obj = get_obj(file, alloc);
         return obj.to_object();
     } else {
         std::cout << "unrecognized file postfix, filename: " << filename << std::endl;

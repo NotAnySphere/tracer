@@ -5,6 +5,7 @@
 #include <cstring>
 #include <cassert>
 #include <stdlib.h>
+#include <memory>
 
 #include <iostream>
 
@@ -36,6 +37,9 @@ public:
     ~arena();
 
     arena_item* alloc_item(size_t item_size);
+
+    template<typename T>
+    T* arena::emplace_item(T& thing);
 
     void clean_arena();
 };
@@ -123,6 +127,14 @@ arena_item* arena::alloc_item(size_t item_size)
     capacity -= item_size;
 
     return item_index;
+}
+
+template<typename T>
+T* arena::emplace_item(T& thing)
+{
+    auto ptr = (T*) arena::alloc_item(sizeof(T));
+    *ptr = thing;
+    return ptr;
 }
 
 void arena::clean_arena()
