@@ -78,16 +78,19 @@ class object {
         object(std::vector<hittable*> hittables) : obj(hittables) {}
 
         object() {
-            obj.push_back(&box());
+            throw "Empty object being created...";
+            // obj.push_back(&box());
         }
+        /*
+        */
 
         std::vector<hittable*> list() {
             return obj;
         }
 
-        aabb_bvh bvh() {
+        aabb_bvh* bvh(arena& alloc) {
             auto list = this->list();
-            return aabb_bvh(list, 0, list.size());
+            return alloc.emplace_item<aabb_bvh>(alloc, list, 0, list.size());
         }
 
         box aabb() {
@@ -177,17 +180,17 @@ class obj {
         }
 
         object to_object(arena& alloc) {
-            std::vector<std::unique_ptr<hittable>> tris = {};
+            std::vector<hittable*> tris = {};
 
             for (auto &&i : this->faces)
             {
                 point3 v1 = verts[i.v1 - 1]; // .obj vert is 1-based index
                 point3 v2 = verts[i.v2 - 1];
                 point3 v3 = verts[i.v3 - 1];
-                std::array<point3, 3> points = { v1, v2, v3 };
-                alloc.alloc_item(sizeof(std::array<point3, 3>))
-                
-                tris.push_back( (points) );
+                std::array<point3, 3> points = { v1, v2, v3 };                
+                auto ptr = alloc.emplace_item<tri>(points);
+
+                tris.push_back( ptr );
             }
 
             return tris;
@@ -195,9 +198,9 @@ class obj {
 };
 
 
-auto get_obj(std::ifstream& file, arena& alloc) -> obj
+auto get_obj(std::ifstream& file) -> obj
 {
-    obj parsed = obj(alloc);
+    obj parsed = obj();
     
     std::string read_line;
     while (getline(file, read_line))
@@ -237,8 +240,8 @@ auto load(std::string filename, arena& alloc) -> object
 
     if (postfix.compare("obj") == 0)
     {
-        auto obj = get_obj(file, alloc);
-        return obj.to_object();
+        auto obj = get_obj(file);
+        return obj.to_object(alloc);
     } else {
         std::cout << "unrecognized file postfix, filename: " << filename << std::endl;
         return object();

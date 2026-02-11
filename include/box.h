@@ -44,17 +44,20 @@ class box : public hittable {
             );
         }
 
-        static bool compare(const unique_ptr<hittable>& a, const unique_ptr<hittable>& b, int axis) {
-            return a->aabb().p1.e[axis] < b->aabb().p1.e[axis];
+        static bool compare(const hittable* a, const hittable* b, int axis) {
+            auto box_a = a->aabb();
+            auto box_b = b->aabb();
+            
+            return box_a.p1.e[axis] < box_b.p1.e[axis];
         }
 
-        static bool compare_x(const unique_ptr<hittable>& a, const unique_ptr<hittable>& b) {
+        static bool compare_x(const hittable* a, const hittable* b) {
             return compare(a, b, 0);
         }
-        static bool compare_y(const unique_ptr<hittable>& a, const unique_ptr<hittable>& b) {
+        static bool compare_y(const hittable* a, const hittable* b) {
             return compare(a, b, 1);
         }
-        static bool compare_z(const unique_ptr<hittable>& a, const unique_ptr<hittable>& b) {
+        static bool compare_z(const hittable* a, const hittable* b) {
             return compare(a, b, 2);
         }
 

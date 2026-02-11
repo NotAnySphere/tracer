@@ -38,8 +38,8 @@ public:
 
     arena_item* alloc_item(size_t item_size);
 
-    template<typename T>
-    T* arena::emplace_item(T& thing);
+    template<typename T, typename... Args>
+    T* emplace_item(Args&&... args);
 
     void clean_arena();
 };
@@ -129,12 +129,11 @@ arena_item* arena::alloc_item(size_t item_size)
     return item_index;
 }
 
-template<typename T>
-T* arena::emplace_item(T& thing)
+template<typename T, typename... Args>
+T* arena::emplace_item(Args&&... args)
 {
-    auto ptr = (T*) arena::alloc_item(sizeof(T));
-    *ptr = thing;
-    return ptr;
+    auto mem = (T*) arena::alloc_item(sizeof(T));
+    return new (mem) T(std::forward<Args>(args)...);
 }
 
 void arena::clean_arena()

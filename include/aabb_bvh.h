@@ -6,6 +6,8 @@
 #include "../include/ray.h"
 #include "../include/box.h"
 
+#include "../include/utils/arena.hpp"
+
 #include <memory>
 #include <vector>
 #include <algorithm>
@@ -15,12 +17,14 @@ using std::optional;
 
 class aabb_bvh : public hittable {
     public:
-        unique_ptr<hittable> left;
-        optional<unique_ptr<hittable>> right;
+        hittable* left;
+        optional<hittable*> right;
         box bb;
 
-        aabb_bvh(std::vector<unique_ptr<hittable>>& objects, size_t start, size_t end) {
-            
+        aabb_bvh(arena& alloc, std::vector<hittable*> objects, size_t start, size_t end) {
+
+            std::cout << "hi\n";
+
             int axis = int(random_double(0,2.99));
 
             auto comp = (axis == 0) ? box::compare_x
@@ -34,24 +38,26 @@ class aabb_bvh : public hittable {
             // sort hittables along that axis
             std::sort(sort_start, sort_end, comp);
 
+            std::cout << "sorted\n";
+
             size_t len = end - start;
             // split evenly into two groups
             
             if (len == 1)
             {
-                left = std::move(objects[start]);
+                left = objects[start];
                 right = {};
                 bb = left->aabb();
             }
             else if (len == 2) 
             {
-                left = std::move(objects[start]);
-                right = std::move(objects[start + 1]);
+                left = objects[start];
+                right = objects[start + 1];
                 bb = box(left->aabb(), right.value()->aabb());
             } else {
                 int size = int(double(len) / 2.0);
-                left = make_unique<aabb_bvh>(objects, start, start + size);
-                right = make_unique<aabb_bvh>(objects, start + size, end);
+                left = alloc.emplace_item<aabb_bvh>(alloc, objects, start, start + size);
+                right = alloc.emplace_item<aabb_bvh>(alloc, objects, start + size, end);
                 bb = box(left->aabb(), right.value()->aabb());
             }
         }
