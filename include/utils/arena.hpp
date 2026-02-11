@@ -58,6 +58,7 @@ arena::arena(size_t size)
 
 arena::~arena()
 {
+    std::cout << "deconstructing arena...\n";
     arena_page* head = first;
     arena_page* next = nullptr;
     do {

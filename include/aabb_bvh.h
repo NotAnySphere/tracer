@@ -21,9 +21,9 @@ class aabb_bvh : public hittable {
         optional<hittable*> right;
         box bb;
 
-        aabb_bvh(arena& alloc, std::vector<hittable*> objects, size_t start, size_t end) {
+        aabb_bvh(arena* alloc, std::vector<hittable*> objects, size_t start, size_t end) {
 
-            std::cout << "hi\n";
+            //std::cout << "hi\n";
 
             int axis = int(random_double(0,2.99));
 
@@ -38,7 +38,7 @@ class aabb_bvh : public hittable {
             // sort hittables along that axis
             std::sort(sort_start, sort_end, comp);
 
-            std::cout << "sorted\n";
+            //std::cout << "sorted\n";
 
             size_t len = end - start;
             // split evenly into two groups
@@ -56,8 +56,8 @@ class aabb_bvh : public hittable {
                 bb = box(left->aabb(), right.value()->aabb());
             } else {
                 int size = int(double(len) / 2.0);
-                left = alloc.emplace_item<aabb_bvh>(alloc, objects, start, start + size);
-                right = alloc.emplace_item<aabb_bvh>(alloc, objects, start + size, end);
+                left = alloc->emplace_item<aabb_bvh>(alloc, objects, start, start + size);
+                right = alloc->emplace_item<aabb_bvh>(alloc, objects, start + size, end);
                 bb = box(left->aabb(), right.value()->aabb());
             }
         }

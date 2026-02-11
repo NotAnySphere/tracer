@@ -40,13 +40,14 @@ int main(int argv, char** args) {
         
         std::cout << args[1] << std::endl;
     }
-    
+    /*
     auto alloc = arena(512);
     std::vector<hittable*> bunnies = {};
     auto obj1 = load("./models/bunny.obj", alloc);
     bunnies.push_back(obj1.bvh(alloc));
+    */
     
-    /*
+    std::vector<hittable*> bunnies = {};
     bunnies.resize(9);
     std::vector<unique_ptr<arena>> arenas = {};
     arenas.resize(9);
@@ -56,23 +57,24 @@ int main(int argv, char** args) {
         for (size_t j = 0; j < 3; j++)
         {
             auto task = [&](size_t i, size_t j) {
-                auto alloc = arena(512);
+                auto alloc = std::make_unique<arena>(512);
                 std::cout << "reading bunny "<< (i * 3) + j << "\n";
-                auto bunny = load("./models/bunny.obj", alloc);
+                auto bunny = load("./models/bunny.obj", alloc.get());
                 bunny.translate_by({((double)i) / 5.0,
                 0,
                 ((double)j) / 5.0});
-                bunnies[(i * 3) + j] = bunny.bvh(alloc);
+                bunnies[(i * 3) + j] = bunny.bvh(alloc.get());
+                arenas[(i * 3) + j] = std::move(alloc);
             };
             pool.enqueue(task, i, j);
         }
     }
     
     pool.join();
-    */
+    auto alloc = arena(512);
     std::cout << "joined input... "<< "\n";
     // World
-    aabb_bvh world = aabb_bvh(alloc, bunnies, 0, bunnies.size());
+    aabb_bvh world = aabb_bvh(&alloc, bunnies, 0, bunnies.size());
     // Camera
     // right, up, back
     int WINDOW_WIDTH = 1600;

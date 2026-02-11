@@ -88,9 +88,9 @@ class object {
             return obj;
         }
 
-        aabb_bvh* bvh(arena& alloc) {
+        aabb_bvh* bvh(arena* alloc) {
             auto list = this->list();
-            return alloc.emplace_item<aabb_bvh>(alloc, list, 0, list.size());
+            return alloc->emplace_item<aabb_bvh>(alloc, list, 0, list.size());
         }
 
         box aabb() {
@@ -179,7 +179,7 @@ class obj {
 
         }
 
-        object to_object(arena& alloc) {
+        object to_object(arena* alloc) {
             std::vector<hittable*> tris = {};
 
             for (auto &&i : this->faces)
@@ -188,7 +188,7 @@ class obj {
                 point3 v2 = verts[i.v2 - 1];
                 point3 v3 = verts[i.v3 - 1];
                 std::array<point3, 3> points = { v1, v2, v3 };                
-                auto ptr = alloc.emplace_item<tri>(points);
+                auto ptr = alloc->emplace_item<tri>(points);
 
                 tris.push_back( ptr );
             }
@@ -210,7 +210,7 @@ auto get_obj(std::ifstream& file) -> obj
     return parsed;
 }
 
-auto load(std::string filename, arena& alloc) -> object
+auto load(std::string filename, arena* alloc) -> object
 {
     std::cout << "current working dir: " << std::filesystem::current_path() << std::endl;
     if (!std::filesystem::exists(filename))
