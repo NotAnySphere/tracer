@@ -8,13 +8,13 @@
 
 class circle_sampler : public sampler {
     public:
-        void sample(std::vector<vec3> *samples) const override {
+        void sample(std::vector<vec3>& samples) const override {
             
-            double angle = (2*pi)/double(samples->size());
+            double angle = (2*pi)/double(samples.size());
 
-            for (size_t i = 0; i < samples->size(); i++)
+            for (size_t i = 0; i < samples.size(); i++)
             {
-                samples->at(i) = 
+                samples[i] = 
                     vec3(std::cos(i*angle)/2, std::sin(i*angle)/2, 0.0);
             }
         }

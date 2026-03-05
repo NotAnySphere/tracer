@@ -21,7 +21,7 @@ class aabb_bvh : public hittable {
         optional<hittable*> right;
         box bb;
 
-        aabb_bvh(arena* alloc, std::vector<hittable*> objects, size_t start, size_t end) {
+        aabb_bvh(arena* alloc, std::vector<hittable*>& objects, size_t start, size_t end) {
 
             //std::cout << "hi\n";
 

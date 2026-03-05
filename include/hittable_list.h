@@ -10,19 +10,17 @@
 #include <vector>
 #include <algorithm>
 
-using std::shared_ptr;
-
 class hittable_list : public hittable {
     public:
-        std::vector<unique_ptr<hittable>> objects;
+        std::vector<hittable*> objects;
 
         hittable_list() {}
-        hittable_list(unique_ptr<hittable> object) { add(std::move(object)); }
+        hittable_list(hittable* object) { add(object); }
 
         void clear() { objects.clear(); }
         
-        void add(unique_ptr<hittable> object) {
-            objects.push_back(std::move(object));
+        void add(hittable* object) {
+            objects.push_back(object);
         }
     
         bool hit(const ray& r, interval ray_t, hit_record& rec) const override;

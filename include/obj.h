@@ -37,7 +37,7 @@ auto leading_spaces(const std::string str) -> std::string
     return chopped;
 }
 
-auto filter(std::function<bool(std::string)> pred, const std::vector<std::string> list) -> std::vector<std::string>
+auto filter(std::function<bool(std::string)> pred, const std::vector<std::string>& list) -> std::vector<std::string>
 {
     std::vector<std::string> filtered = {};
 
@@ -139,12 +139,12 @@ class obj {
         std::vector<point3> verts = {};
         std::vector<face> faces = {};
 
-        point3 get_vert(const std::vector<std::string> verts) {
+        point3 get_vert(const std::vector<std::string>& verts) {
             // index 0 is "v"
             return point3(std::stod(verts[1]), std::stod(verts[2]), std::stod(verts[3]));
         }
 
-        struct face get_face(const std::vector<std::string> face_index) {
+        struct face get_face(const std::vector<std::string>& face_index) {
             // index 0 is "f"            
             struct face face = {(uint16_t) std::stoi(face_index[1]),
                                 (uint16_t) std::stoi(face_index[2]),
