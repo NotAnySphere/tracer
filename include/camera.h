@@ -23,7 +23,6 @@ class camera {
 
         point3 camera_center;
 
-
         camera(int width, double aspect_ratio, int samples_per_pixel, unique_ptr<sampler> sampler) {
             image_width = width;
             this->aspect_ratio= aspect_ratio;
@@ -32,34 +31,32 @@ class camera {
             this->initialize();
         }
 
-        void write_scanline(const int height, const hittable& world, SDL_Surface* surface) {
-            std::vector<vec3> samples = {};
-            samples.resize(samples_per_pixel);
-            
+        void write_scanline(const int height, const hittable& world, const std::vector<vec3>& sample_offsets, SDL_Surface* surface) {
             for (int j = 0; j < image_width; j++) {
                 point3 pixel_center = pixel00_loc + (pixel_delta_u * j) + (pixel_delta_v * height);
                 color pixel_color = color(0.0,0.0,0.0);
                 
-                sampler_distribution->sample(samples);
-                for (size_t i = 0; i < samples.size(); i++)
+                for (auto &&offset : sample_offsets)
                 {
-                    vec3 offset = samples.at(i);
                     vec3 sample_direction = (pixel_center + (offset * pixel_delta_u.x())) - camera_center;
                     ray r = ray(camera_center, sample_direction);
-                    pixel_color = pixel_color + (ray_color(r, world) / samples.size());
+                    pixel_color = pixel_color + (ray_color(r, world) / sample_offsets.size());    
                 }
                 
                 write_color(pixel_color , j, height, surface);
             }
         }
-
+        
         void render(const hittable& world, SDL_Surface* surface) {
             update_cam();
+            
+            auto sample_offsets = sampler_distribution->sample_offsets(samples_per_pixel);
+            
             thread_pool pool(16);
             for (int i = 0; i < image_height; i++) {
                 auto task = [&](int i, const hittable& world, SDL_Surface* surface){
                     std::cout << "\rScanlines remaining: " << (image_height - i) << ' ' << std::flush;
-                    write_scanline(i, world, surface);
+                    write_scanline(i, world, sample_offsets, surface);
                 };
                 pool.enqueue(task, i, std::ref(world), surface);
             }
@@ -98,7 +95,6 @@ class camera {
         }
 
         void update_cam() {
-
             double focal_length = 1.0;
             double viewport_height = 2.0;
             double viewport_width = viewport_height * (double(image_width) / image_height);

@@ -4,13 +4,13 @@
 #include "../include/vec3.h"
 
 #include <vector>
+#include <memory>
 
 class sampler {
     public:
         virtual ~sampler() = default;
 
-        // fills the vec with samples
-        virtual void sample(std::vector<vec3>& samples) const {};
+        virtual std::vector<vec3> sample_offsets(size_t samples) const = 0;
 };
 
 #endif // SAMPLER_H
