@@ -48,13 +48,13 @@ int main(int argv, char** args) {
     */
     
     std::vector<hittable*> bunnies = {};
-    bunnies.resize(1);
+    bunnies.resize(9);
     std::vector<unique_ptr<arena>> arenas = {};
-    arenas.resize(1);
-    auto pool = thread_pool(1);
-    for (size_t i = 0; i < 1; i++)
+    arenas.resize(9);
+    auto pool = thread_pool(8);
+    for (size_t i = 0; i < 3; i++)
     {
-        for (size_t j = 0; j < 1; j++)
+        for (size_t j = 0; j < 3; j++)
         {
             auto task = [&](size_t i, size_t j) {
                 auto alloc = std::make_unique<arena>(512);
