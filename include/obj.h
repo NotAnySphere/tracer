@@ -22,7 +22,7 @@ f 1 2 3
 
 */
 
-auto carriage(const std::string str) -> std::string
+auto carriage(const std::string& str) -> std::string
 {
     if (str[str.size() - 1] == '\n') {
         return str.substr(0, str.length() - 1);
@@ -30,14 +30,14 @@ auto carriage(const std::string str) -> std::string
     return str;
 }
 
-auto leading_spaces(const std::string str) -> std::string
+auto leading_spaces(const std::string& str) -> std::string
 {
     auto first = str.find_first_not_of(' ');
     auto chopped = str.substr(first, str.length() - first);
     return chopped;
 }
 
-auto filter(std::function<bool(std::string)> pred, const std::vector<std::string>& list) -> std::vector<std::string>
+auto filter(std::function<bool(std::string&)> pred, std::vector<std::string>& list) -> std::vector<std::string>
 {
     std::vector<std::string> filtered = {};
 
@@ -51,7 +51,7 @@ auto filter(std::function<bool(std::string)> pred, const std::vector<std::string
     return filtered;
 }
 
-auto split(const std::string split, const std::string line) -> std::vector<std::string>
+auto split(const std::string& split, const std::string& line) -> std::vector<std::string>
 {
     std::vector<std::string> subs = {};
     std::size_t pos = 0;
