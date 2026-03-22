@@ -8,7 +8,6 @@
 #include <filesystem>
 
 #include "../include/hittable.h"
-#include "../include/hittable_list.h"
 #include "../include/tri.h"
 #include "../include/box.h"
 #include "../include/aabb_bvh.h"
@@ -73,21 +72,20 @@ auto split(const std::string& split, const std::string& line) -> std::vector<std
 
 class object {
     public:
-        std::vector<hittable*> obj{};
+        std::vector<hittable> obj{};
 
-        object(std::vector<hittable*> hittables) : obj(hittables) {}
+        object(std::vector<hittable> hittables) : obj(hittables) {}
 
         object() {
             throw "Empty object being created...";
             // obj.push_back(&box());
         }
-        /*
-        */
-
-        std::vector<hittable*> list() {
+        
+        // copy
+        std::vector<hittable> list() {
             return obj;
-        }
-
+        }    
+        
         aabb_bvh* bvh(arena* alloc) {
             auto list = this->list();
             return alloc->emplace_item<aabb_bvh>(alloc, list, 0, list.size());
@@ -99,10 +97,10 @@ class object {
                 return box();
             }
             
-            box aabb = obj[0]->aabb();
+            box aabb = obj[0].aabb();
             for (size_t i = 0; i < obj.size(); i++)
             {
-                aabb = box(aabb, obj[i]->aabb());
+                aabb = box(aabb, obj[i].aabb());
             }
             return aabb;
         }
@@ -113,7 +111,7 @@ class object {
             point3 p11 = bb1.p1;
             for (auto &&i : obj)
             {
-                i->scale_by(factor);
+                i.scale_by(factor);
             }
             box bb2 = aabb();
             point3 p12 = bb2.p1;
@@ -123,7 +121,7 @@ class object {
         void translate_by(vec3 vec) {
             for (auto &&i : obj)
             {
-                i->translate_by(vec);
+                i.translate_by(vec);
             }
         }
 };
@@ -179,8 +177,9 @@ class obj {
 
         }
 
-        object to_object(arena* alloc) {
-            std::vector<hittable*> tris = {};
+        object to_object() {
+            std::vector<hittable> tris = {};
+            tris.reserve(faces.size());
 
             for (auto &&i : this->faces)
             {
@@ -188,9 +187,9 @@ class obj {
                 point3 v2 = verts[i.v2 - 1];
                 point3 v3 = verts[i.v3 - 1];
                 std::array<point3, 3> points = { v1, v2, v3 };                
-                auto ptr = alloc->emplace_item<tri>(points);
+                hittable triangle = { .tag=hittable::TRI, .uni=tri(points) };
 
-                tris.push_back( ptr );
+                tris.push_back( triangle );
             }
 
             return tris;
@@ -210,7 +209,7 @@ auto get_obj(std::ifstream& file) -> obj
     return parsed;
 }
 
-auto load(std::string filename, arena* alloc) -> object
+auto load(std::string filename) -> object
 {
     std::cout << "current working dir: " << std::filesystem::current_path() << std::endl;
     if (!std::filesystem::exists(filename))
@@ -241,7 +240,7 @@ auto load(std::string filename, arena* alloc) -> object
     if (postfix.compare("obj") == 0)
     {
         auto obj = get_obj(file);
-        return obj.to_object(alloc);
+        return obj.to_object();
     } else {
         std::cout << "unrecognized file postfix, filename: " << filename << std::endl;
         return object();

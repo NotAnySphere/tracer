@@ -1,6 +1,5 @@
 #include "../include/rtweekend.h"
 #include "../include/hittable.h"
-#include "../include/hittable_list.h"
 #include "../include/aabb_bvh.h"
 #include "../include/sphere.h"
 #include "../include/tri.h"
@@ -59,7 +58,7 @@ int main(int argv, char** args) {
             auto task = [&](size_t i, size_t j) {
                 auto alloc = std::make_unique<arena>(512);
                 std::cout << "reading bunny "<< (i * 3) + j << "\n";
-                auto bunny = load("./models/bunny.obj", alloc.get());
+                auto bunny = load("./models/bunny.obj");
                 bunny.translate_by({((double)i) / 5.0,
                 0,
                 ((double)j) / 5.0});

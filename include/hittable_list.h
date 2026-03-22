@@ -24,6 +24,7 @@ class hittable_list {
         }
     
         bool hit(const ray& r, interval ray_t, hit_record& rec) const override;
+        
         box aabb() const override {
             if (objects.size() < 1)
             {

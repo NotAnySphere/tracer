@@ -45,14 +45,14 @@ class aabb_bvh {
             
             if (len == 1)
             {
-                left = objects[start];
+                left = &objects[start];
                 right = {};
                 bb = left->aabb();
             }
             else if (len == 2) 
             {
-                left = objects[start];
-                right = objects[start + 1];
+                left = &objects[start];
+                right = &objects[start + 1];
                 bb = box(left->aabb(), right.value()->aabb());
             } else {
                 int size = int(double(len) / 2.0);
