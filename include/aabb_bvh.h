@@ -5,6 +5,7 @@
 #include "../include/hittable.h"
 #include "../include/ray.h"
 #include "../include/box.h"
+#include "../include/hit_record.h"
 
 #include "../include/utils/arena.hpp"
 

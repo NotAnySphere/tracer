@@ -1,9 +1,9 @@
 #ifndef BOX_H
 #define BOX_H
 
-#include "../include/hittable.h"
+#include "../include/hit_record.h"
 
-class box : public hittable {
+class box {
     public:
         point3 p1, p2;
 
@@ -61,7 +61,7 @@ class box : public hittable {
             return compare(a, b, 2);
         }
 
-        bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
+        bool hit(const ray& r, interval ray_t, hit_record& rec) const {
             interval x_t = interval::from((p1.x() - r.origin().x())/r.direction().x(),
                                           (p2.x() - r.origin().x())/r.direction().x());
             interval y_t = interval::from((p1.y() - r.origin().y())/r.direction().y(),
@@ -79,11 +79,11 @@ class box : public hittable {
             return true;
         }
 
-        box aabb() const override {
+        box aabb() const {
             return box(p1,p2);
         }
 
-        void scale_by(double factor) override {
+        void scale_by(double factor) {
             p1 = p1 * factor;
             p2 = p2 * factor;
         }

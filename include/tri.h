@@ -2,7 +2,8 @@
 #define TRI_H
 
 #include "../include/rtweekend.h"
-#include "../include/hittable.h"
+#include "../include/hit_record.h"
+#include "../include/box.h"
 #include "array"
 
 class tri {

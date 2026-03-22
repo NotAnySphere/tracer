@@ -1,5 +1,7 @@
+#if !defined(SPHERE_CPP)
+#define SPHERE_CPP
+
 #include "../include/sphere.h"
-#include "../include/box.h"
 
 bool sphere::hit(const ray& r, interval ray_t, hit_record& rec) const {
     vec3 oc = center - r.origin();
@@ -31,3 +33,5 @@ box sphere::aabb() const {
         point3(center.x() + radius, center.y() + radius, center.z() + radius)
     );
 }
+
+#endif // SPHERE_CPP
