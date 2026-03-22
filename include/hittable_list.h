@@ -10,7 +10,7 @@
 #include <vector>
 #include <algorithm>
 
-class hittable_list : public hittable {
+class hittable_list {
     public:
         std::vector<hittable*> objects;
 

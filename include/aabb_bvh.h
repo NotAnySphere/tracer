@@ -15,13 +15,13 @@
 
 using std::optional;
 
-class aabb_bvh : public hittable {
+class aabb_bvh {
     public:
         hittable* left;
         optional<hittable*> right;
         box bb;
 
-        aabb_bvh(arena* alloc, std::vector<hittable*>& objects, size_t start, size_t end) {
+        aabb_bvh(arena* alloc, std::vector<hittable>& objects, size_t start, size_t end) {
 
             //std::cout << "hi\n";
 
@@ -56,13 +56,19 @@ class aabb_bvh : public hittable {
                 bb = box(left->aabb(), right.value()->aabb());
             } else {
                 int size = int(double(len) / 2.0);
-                left = alloc->emplace_item<aabb_bvh>(alloc, objects, start, start + size);
-                right = alloc->emplace_item<aabb_bvh>(alloc, objects, start + size, end);
+                left = alloc->emplace_item<hittable>();
+                left->uni.aabb_bvh = aabb_bvh(alloc, objects, start, start + size);
+                left->tag = hittable::AABB;
+                
+                right = alloc->emplace_item<hittable>();
+                right.value()->uni.aabb_bvh = aabb_bvh(alloc, objects, start + size, end);
+                right.value()->tag = hittable::AABB;
+                
                 bb = box(left->aabb(), right.value()->aabb());
             }
         }
     
-        bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
+        bool hit(const ray& r, interval ray_t, hit_record& rec) const {
             if (!bb.hit(r, ray_t, rec))
             {
                 // std::cout << "missed!" << std::endl;
@@ -83,17 +89,17 @@ class aabb_bvh : public hittable {
             return left_hit || right_hit;
         }
 
-        box aabb() const override {
+        box aabb() const {
             return bb;
         }
         
-        void scale_by(double factor) override {
+        void scale_by(double factor) {
             left->scale_by(factor);
             if (right.has_value()) right.value()->scale_by(factor);
             bb.scale_by(factor); 
         }
 
-        void translate_by(vec3 vec) override {
+        void translate_by(vec3 vec) {
             left->translate_by(vec);
             if (right.has_value()) right.value()->translate_by(vec);
             bb.translate_by(vec); 

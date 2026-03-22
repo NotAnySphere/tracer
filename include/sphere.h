@@ -4,13 +4,13 @@
 #include "../include/rtweekend.h"
 #include "../include/hittable.h"
 
-class sphere : public hittable {
+class sphere {
     public:
         sphere(const point3& center, double radius) : center(center), radius(std::fmax(0,radius)) {}
 
-        bool hit(const ray& r, interval ray_t, hit_record& rec) const override;
+        bool hit(const ray& r, interval ray_t, hit_record& rec) const;
 
-        box aabb() const override;
+        box aabb() const;
 
         void scale_by(double factor) {
             center = center * factor;

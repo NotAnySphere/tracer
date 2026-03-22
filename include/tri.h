@@ -5,11 +5,11 @@
 #include "../include/hittable.h"
 #include "array"
 
-class tri : public hittable {
+class tri {
     public:
         explicit tri(const std::array<point3, 3> new_verts) : verts(new_verts) {}
 
-        bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
+        bool hit(const ray& r, interval ray_t, hit_record& rec) const {
             
             double eps = std::numeric_limits<double>::epsilon();
 
@@ -58,7 +58,7 @@ class tri : public hittable {
             return true;
         }
 
-        box aabb() const override {
+        box aabb() const {
             box aabb = box();
             for (size_t i = 0; i < 3; i++)
             {
@@ -79,14 +79,14 @@ class tri : public hittable {
             return aabb;
         }
 
-        void scale_by(double factor) override {
+        void scale_by(double factor) {
             for (size_t i = 0; i < verts.size(); i++)
             {
                 verts[i] = verts[i] * factor;
             }
         }
 
-        void translate_by(vec3 vec) override {
+        void translate_by(vec3 vec) {
             for (size_t i = 0; i < verts.size(); i++)
             {
                 verts[i] = verts[i] + vec;

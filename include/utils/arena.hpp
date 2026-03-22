@@ -159,4 +159,35 @@ void arena::clean_arena()
     capacity = page_size;
 }
 
+template <typename T>
+class ArenaAllocator {
+    public:
+    using value_type = T;
+
+    std::shared_ptr<arena> pool;
+
+    ArenaAllocator(std::shared_ptr<arena> a) noexcept : pool(a) {}
+
+    ArenaAllocator(const size_t size) {
+        pool = std::move(std::make_shared<arena>(size));
+    }
+
+    template <typename U>
+    ArenaAllocator(const ArenaAllocator<U>& other) noexcept : pool(other.pool) {}
+
+    T* allocate(std::size_t n) {
+        return static_cast<T*>((void*) pool->alloc_item(n * sizeof(T), alignof(T)));
+    }
+
+    void deallocate(T*, std::size_t) noexcept {}
+
+    bool operator==(const ArenaAllocator& other) const noexcept {
+        return pool == other.pool;
+    }
+    
+    bool operator!=(const ArenaAllocator& other) const noexcept {
+        return !(*this == other);
+    }
+};
+
 #endif // ARENA
