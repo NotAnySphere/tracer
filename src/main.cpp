@@ -71,7 +71,7 @@ int main(int argv, char** args) {
     }
     
     pool.join();
-    auto alloc = arena(512);
+    auto alloc = arena(4096);
     std::cout << "joined input... "<< "\n";
     // World
     aabb_bvh world = aabb_bvh(&alloc, bunnies, 0, bunnies.size());

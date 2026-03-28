@@ -9,6 +9,8 @@
 
 #include <iostream>
 
+#include "../utils/logger_alloc.hpp"
+
 const size_t calculate_padding(size_t base, size_t alignment) {
     size_t factor = (base / alignment) + 1;
     size_t aligned_address = factor * alignment;
@@ -125,13 +127,7 @@ arena_item *arena::alloc_item(size_t item_size, size_t alignment) {
     index += total_item_size;
     capacity -= total_item_size;
 
-    // std::cout << "arena allo_item: " << std::dec << item_size << " with
-    // padding: " << needed_padding << " with capacity: " << capacity << " top:
-    // " << (void*) index <<  " and padded_address: " << (void*) item_index <<
-    // "\n"; std::cout << "arena allo_item: " << std::dec << item_size << " with
-    // capacity: " << capacity << " with padding: " << needed_padding << " at
-    // address: 0x" << (size_t) item_index << " with padded_address: " <<
-    // (size_t) index << std::dec << "\n";
+    //std::cout << "arena allo_item: " << std::dec << item_size << " with capacity: " << capacity << " with padding: " << needed_padding << std::hex << " at address: 0x" << (size_t) item_index << " with padded_address: " << (size_t) index << std::dec << "\n";
     return item_index;
 }
 
@@ -148,6 +144,12 @@ void arena::clean_arena() {
     capacity = page_size;
 }
 
+inline std::shared_ptr<arena> get_default_arena() {
+    thread_local std::shared_ptr<arena> alloc = std::make_shared<arena>(4096);
+    //std::cout << "default arena taken\n";
+    return alloc;
+}
+
 template <typename T> class ArenaAllocator {
   public:
     using value_type = T;
@@ -155,7 +157,9 @@ template <typename T> class ArenaAllocator {
     std::shared_ptr<arena> pool;
 
     ArenaAllocator(std::shared_ptr<arena> a) noexcept : pool(a) {}
-
+    
+    ArenaAllocator() noexcept : pool(get_default_arena()) {}
+    
     ArenaAllocator(const size_t size) {
         pool = std::move(std::make_shared<arena>(size));
     }
@@ -170,6 +174,10 @@ template <typename T> class ArenaAllocator {
     }
 
     void deallocate(T *, std::size_t) noexcept {}
+
+    void clear() noexcept {
+        pool->clean_arena();
+    }
 
     bool operator==(const ArenaAllocator &other) const noexcept {
         return pool == other.pool;

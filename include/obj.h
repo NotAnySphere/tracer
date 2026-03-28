@@ -168,9 +168,9 @@ class obj {
 
         template<class CharT, class Traits, class Alloc>
         void line(std::basic_string<CharT, Traits, Alloc>& line) {
-            
+            //std::cout << line << "\n";
             auto crlf = carriage(line);
-            auto leading = leading_spaces(line);
+            auto leading = leading_spaces(crlf);
             auto splitted = split(" ", leading);
             auto words = filter([] (auto& str) { return !(str.empty() || str[0] == ' '); }, splitted);
                         
@@ -217,11 +217,19 @@ auto get_obj(std::ifstream& file) -> obj
 {
     obj parsed = obj();
     
-    std::string read_line;
+    //std::string read_line;
     //std::basic_string<char, std::char_traits<char>, LoggingAllocator<char>> read_line {};
-    while (getline(file, read_line))
+
+    ArenaAllocator<char> alloc = ArenaAllocator<char>();
+    std::basic_string<char, std::char_traits<char>, ArenaAllocator<char>> read_line("tst",alloc);
+    
+    while (true)
     {
-        parsed.line(read_line);
+        alloc.clear();
+        if (!getline(file, read_line)) {
+            break;
+        }
+        parsed.line(read_line); 
     }
     return parsed;
 }
