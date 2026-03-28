@@ -6,6 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <filesystem>
+#include <charconv>
 
 #include "../include/hittable.h"
 #include "../include/hittable_list.h"
@@ -13,6 +14,7 @@
 #include "../include/box.h"
 #include "../include/aabb_bvh.h"
 #include "../include/utils/arena.hpp"
+#include "../include/utils/logger_alloc.hpp"
 
 /*
 only supports
@@ -22,24 +24,28 @@ f 1 2 3
 
 */
 
-auto carriage(const std::string& str) -> std::string
+// using String = std::basic_string<CharT, Traits, Alloc>;
+
+template<class CharT, class Traits, class Alloc>
+auto carriage(std::basic_string<CharT, Traits, Alloc>& str) -> std::basic_string<CharT, Traits, Alloc>
 {
     if (str[str.size() - 1] == '\n') {
         return str.substr(0, str.length() - 1);
     }
     return str;
 }
-
-auto leading_spaces(const std::string& str) -> std::string
+template<class CharT, class Traits, class Alloc>
+auto leading_spaces(std::basic_string<CharT, Traits, Alloc>& str) -> std::basic_string<CharT, Traits, Alloc>
 {
     auto first = str.find_first_not_of(' ');
     auto chopped = str.substr(first, str.length() - first);
     return chopped;
 }
 
-auto filter(std::function<bool(std::string&)> pred, std::vector<std::string>& list) -> std::vector<std::string>
+template<typename Pred, typename Container>
+auto filter(Pred pred, Container& list)
 {
-    std::vector<std::string> filtered = {};
+    Container filtered = {};
 
     for (auto &&i : list)
     {
@@ -51,9 +57,10 @@ auto filter(std::function<bool(std::string&)> pred, std::vector<std::string>& li
     return filtered;
 }
 
-auto split(const std::string& split, const std::string& line) -> std::vector<std::string>
+template<class CharT, class Traits, class Alloc>
+auto split(const std::string& split, const std::basic_string<CharT, Traits, Alloc>& line) -> std::vector<std::basic_string<CharT, Traits, Alloc>>
 {
-    std::vector<std::string> subs = {};
+    std::vector<std::basic_string<CharT, Traits, Alloc>> subs = {};
     std::size_t pos = 0;
 
     while (true)
@@ -139,25 +146,33 @@ class obj {
         std::vector<point3> verts = {};
         std::vector<face> faces = {};
 
-        point3 get_vert(const std::vector<std::string>& verts) {
+        template <typename View>
+        point3 get_vert(const View& verts) {
+            double x,y,z;
             // index 0 is "v"
-            return point3(std::stod(verts[1]), std::stod(verts[2]), std::stod(verts[3]));
+            std::from_chars(verts[1].data(), verts[1].data() + verts[1].size(), x);
+            std::from_chars(verts[2].data(), verts[2].data() + verts[2].size(), y);
+            std::from_chars(verts[3].data(), verts[3].data() + verts[3].size(), z);
+            return point3(x, y, z);
         }
 
-        struct face get_face(const std::vector<std::string>& face_index) {
-            // index 0 is "f"            
-            struct face face = {(uint16_t) std::stoi(face_index[1]),
-                                (uint16_t) std::stoi(face_index[2]),
-                                (uint16_t) std::stoi(face_index[3])};
-            return face;
+        template <typename View>
+        struct face get_face(const View& face_index) {
+            uint16_t v1,v2,v3;
+            // index 0 is "f"
+            std::from_chars(face_index[1].data(), face_index[1].data() + face_index[1].size(), v1);
+            std::from_chars(face_index[2].data(), face_index[2].data() + face_index[2].size(), v2);
+            std::from_chars(face_index[3].data(), face_index[3].data() + face_index[3].size(), v3);
+            return face {v1, v2, v3};
         }
 
-        void line(std::string line) {
+        template<class CharT, class Traits, class Alloc>
+        void line(std::basic_string<CharT, Traits, Alloc>& line) {
             
             auto crlf = carriage(line);
             auto leading = leading_spaces(line);
             auto splitted = split(" ", leading);
-            auto words = filter([] (std::string str) { return !(str.empty() || str[0] == ' '); }, splitted);
+            auto words = filter([] (auto& str) { return !(str.empty() || str[0] == ' '); }, splitted);
                         
             if (words.size() < 2)
             {
@@ -203,6 +218,7 @@ auto get_obj(std::ifstream& file) -> obj
     obj parsed = obj();
     
     std::string read_line;
+    //std::basic_string<char, std::char_traits<char>, LoggingAllocator<char>> read_line {};
     while (getline(file, read_line))
     {
         parsed.line(read_line);
