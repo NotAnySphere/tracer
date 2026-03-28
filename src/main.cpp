@@ -48,23 +48,26 @@ int main(int argv, char** args) {
     */
     
     std::vector<hittable*> bunnies = {};
-    bunnies.resize(1);
+    bunnies.resize(16);
     std::vector<unique_ptr<arena>> arenas = {};
-    arenas.resize(1);
+    arenas.resize(16);
     auto pool = thread_pool(1);
-    for (size_t i = 0; i < 1; i++)
+    
+    int row = 4;
+    int col = 4;
+    for (size_t i = 0; i < col; i++)
     {
-        for (size_t j = 0; j < 1; j++)
+        for (size_t j = 0; j < row; j++)
         {
             auto task = [&](size_t i, size_t j) {
                 auto alloc = std::make_unique<arena>(512);
-                std::cout << "reading bunny "<< (i * 3) + j << "\n";
+                std::cout << "reading bunny "<< (i * col) + j << "\n";
                 auto bunny = load("./models/bunny.obj", alloc.get());
                 bunny.translate_by({((double)i) / 5.0,
                 0,
                 ((double)j) / 5.0});
-                bunnies[(i * 3) + j] = bunny.bvh(alloc.get());
-                arenas[(i * 3) + j] = std::move(alloc);
+                bunnies[(i * col) + j] = bunny.bvh(alloc.get());
+                arenas[(i * col) + j] = std::move(alloc);
             };
             pool.enqueue(task, i, j);
         }
@@ -75,6 +78,10 @@ int main(int argv, char** args) {
     std::cout << "joined input... "<< "\n";
     // World
     aabb_bvh world = aabb_bvh(&alloc, bunnies, 0, bunnies.size());
+    
+    auto aabb_done = std::chrono::high_resolution_clock().now();
+    std::cout << "AABB complete in: " << std::chrono::duration_cast<std::chrono::milliseconds>(aabb_done - start).count() << "ms" << std::endl;
+
     // Camera
     // right, up, back
     int WINDOW_WIDTH = 1600;
@@ -99,11 +106,6 @@ int main(int argv, char** args) {
 
     auto surface = SDL_CreateSurface(cam.image_width, cam.image_height, SDL_PIXELFORMAT_RGBA32);
 
-
-    auto aabb_done = std::chrono::high_resolution_clock().now();
-    std::cout << "AABB complete in: " << std::chrono::duration_cast<std::chrono::milliseconds>(aabb_done - start).count() << "ms" << std::endl;
-
-
     while (1) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
@@ -116,12 +118,14 @@ int main(int argv, char** args) {
                 //cam.translate(vec3(-0.1, 0, 0));
             }
         }
+        auto render_start = std::chrono::high_resolution_clock().now();
+
         SDL_LockSurface(surface);
         cam.render(world, surface);
         SDL_UnlockSurface(surface);
 
         auto render_done = std::chrono::high_resolution_clock().now();
-        std::cout << "render complete in: " << std::chrono::duration_cast<std::chrono::milliseconds>(render_done - aabb_done).count() << "ms" << std::endl;
+        std::cout << "render complete in: " << std::chrono::duration_cast<std::chrono::milliseconds>(render_done - render_start).count() << "ms" << std::endl;
 
         auto texture = SDL_CreateTextureFromSurface(renderer, surface);
 
