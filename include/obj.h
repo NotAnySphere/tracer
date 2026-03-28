@@ -27,34 +27,39 @@ f 1 2 3
 // using String = std::basic_string<CharT, Traits, Alloc>;
 
 template<class CharT, class Traits, class Alloc>
-auto carriage(std::basic_string<CharT, Traits, Alloc>& str) -> std::basic_string<CharT, Traits, Alloc>
+auto carriage(std::basic_string<CharT, Traits, Alloc>& str)
 {
-    if (str[str.size() - 1] == '\n') {
-        return str.substr(0, str.length() - 1);
-    }
-    return str;
+    if (str.ends_with('\n')) str.pop_back();
 }
+
 template<class CharT, class Traits, class Alloc>
-auto leading_spaces(std::basic_string<CharT, Traits, Alloc>& str) -> std::basic_string<CharT, Traits, Alloc>
+auto leading_spaces(std::basic_string<CharT, Traits, Alloc>& str)
 {
     auto first = str.find_first_not_of(' ');
-    auto chopped = str.substr(first, str.length() - first);
-    return chopped;
+    str.assign(str.begin(), str.end() - first);
 }
 
 template<typename Pred, typename Container>
 auto filter(Pred pred, Container& list)
 {
-    Container filtered = {};
+    //Container filtered = {};
 
-    for (auto &&i : list)
-    {
-        if (pred(i))
-        {
-            filtered.push_back(i);
-        }
-    }
-    return filtered;
+
+    list.erase(std::remove_if(list.begin(),
+                              list.end(),
+                              [&](auto i) { return !pred(i); }),
+               list.end());
+
+
+    //for (auto &&i : list)
+    //{
+    //    if (pred(i))
+    //    {
+    //        filtered.push_back(i);
+    //        filtered.
+    //    }
+    //}
+    //return filtered;
 }
 
 template<class CharT, class Traits, class Alloc>
@@ -169,24 +174,24 @@ class obj {
         template<class CharT, class Traits, class Alloc>
         void line(std::basic_string<CharT, Traits, Alloc>& line) {
             //std::cout << line << "\n";
-            auto crlf = carriage(line);
-            auto leading = leading_spaces(crlf);
-            auto splitted = split(" ", leading);
-            auto words = filter([] (auto& str) { return !(str.empty() || str[0] == ' '); }, splitted);
+            carriage(line);
+            leading_spaces(line);
+            auto splitted = split(" ", line);
+            filter([] (auto& str) { return !(str.empty() || str[0] == ' '); }, splitted);
                         
-            if (words.size() < 2)
+            if (splitted.size() < 2)
             {
                 return;
             }
-            switch (words[0][0])
+            switch (splitted[0][0])
             {
             case '#':
                 break;
             case 'v':
-                this->verts.push_back(get_vert(words));
+                this->verts.push_back(get_vert(splitted));
                 break;
             case 'f':
-                this->faces.push_back(get_face(words));
+                this->faces.push_back(get_face(splitted));
                 break;            
             default:
                 break;

@@ -47,14 +47,16 @@ int main(int argv, char** args) {
     bunnies.push_back(obj1.bvh(alloc));
     */
     
+    
+    int row = 1;
+    int col = row;
+    
     std::vector<hittable*> bunnies = {};
-    bunnies.resize(16);
+    bunnies.resize(row*col);
     std::vector<unique_ptr<arena>> arenas = {};
-    arenas.resize(16);
+    arenas.resize(row*col);
     auto pool = thread_pool(1);
     
-    int row = 4;
-    int col = 4;
     for (size_t i = 0; i < col; i++)
     {
         for (size_t j = 0; j < row; j++)
