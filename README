@@ -3,3 +3,7 @@ https://raytracing.github.io/books/RayTracingInOneWeekend.html#outputanimage/the
 TODO:
     - Z order curve thingymabob?
     - arena allocation weghalen uit de bvh
+    - manier om camera pos te halen uit interactive mode
+    - tracing op gpu doen
+    - wireframe van bvh toelaten
+    - Don't boot up SDL_VIDEO when just writing image

@@ -56,7 +56,6 @@ int main(int argv, char** args) {
     std::vector<unique_ptr<arena>> arenas = {};
     arenas.resize(row*col);
     auto pool = thread_pool(1);
-    
     for (size_t i = 0; i < col; i++)
     {
         for (size_t j = 0; j < row; j++)
@@ -64,7 +63,7 @@ int main(int argv, char** args) {
             auto task = [&](size_t i, size_t j) {
                 auto alloc = std::make_unique<arena>(512);
                 std::cout << "reading bunny "<< (i * col) + j << "\n";
-                auto bunny = load("./models/bunny.obj", alloc.get());
+                auto bunny = load("./models/test.obj", alloc.get());
                 bunny.translate_by({((double)i) / 5.0,
                 0,
                 ((double)j) / 5.0});
@@ -74,7 +73,18 @@ int main(int argv, char** args) {
             pool.enqueue(task, i, j);
         }
     }
+
+    /*
+    bunnies.push_back(new sphere(point3(0,0,-1), 0.5));
+    bunnies.push_back(new sphere(point3(0.5,1.5,-3), 0.4));
+    bunnies.push_back(new sphere(point3(0,-100.5,-1), 100));
+   
+    std::array<point3, 3> verts = { point3(0,0,-1), point3(-1,1,-1), point3(-2,-1,-1) };
+    bunnies.push_back(new tri(verts));
+
+    */
     
+
     pool.join();
     auto alloc = arena(4096);
     std::cout << "joined input... "<< "\n";
@@ -86,7 +96,7 @@ int main(int argv, char** args) {
 
     // Camera
     // right, up, back
-    int WINDOW_WIDTH = 1600;
+    int WINDOW_WIDTH = 2160;
     double ASPECT_RATIO = 16.0 / 10.0;
 
     auto cam = camera(WINDOW_WIDTH, ASPECT_RATIO, 1, make_unique<unit_sampler>());
@@ -95,6 +105,25 @@ int main(int argv, char** args) {
     // Render
     SDL_Window *window;
     SDL_Renderer *renderer;
+
+    auto surface = SDL_CreateSurface(cam.image_width, cam.image_height, SDL_PIXELFORMAT_RGBA32);
+
+    if (write)
+    {
+        auto render_start = std::chrono::high_resolution_clock().now();
+
+        SDL_LockSurface(surface);
+        cam.render(world, surface);
+        SDL_UnlockSurface(surface);
+
+        auto render_done = std::chrono::high_resolution_clock().now();
+        std::cout << "render complete in: " << std::chrono::duration_cast<std::chrono::milliseconds>(render_done - render_start).count() << "ms" << std::endl;
+
+        auto texture = SDL_CreateTextureFromSurface(renderer, surface);
+        
+        SDL_SaveBMP(surface, "./build/image.bmp");
+        return 0;
+    }
 
     if (!SDL_Init(SDL_INIT_VIDEO)) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't initialize SDL: %s", SDL_GetError());
@@ -105,8 +134,6 @@ int main(int argv, char** args) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create window and renderer: %s", SDL_GetError());
         return 3;
     }
-
-    auto surface = SDL_CreateSurface(cam.image_width, cam.image_height, SDL_PIXELFORMAT_RGBA32);
 
     while (1) {
         SDL_Event event;
@@ -141,11 +168,7 @@ int main(int argv, char** args) {
             cam.camera_center.y(),
             cam.camera_center.z()).c_str());
         
-        if (write)
-        {
-            SDL_SaveBMP(surface, "./build/image.bmp");
-            return 0;
-        }
+        
         
         SDL_RenderPresent(renderer);
     }

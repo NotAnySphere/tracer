@@ -71,11 +71,21 @@ class box : public hittable {
             
             interval t = x_t.intersection(y_t).intersection(z_t);
                    
-            if (t.size() < std::numeric_limits<double>::epsilon())
+            if (t.size() < std::numeric_limits<double>::epsilon() || !ray_t.contains(t.min))
             {
                 return false;
             }
             
+            // detect if we hit edge
+            if (t.size() < 0.01)
+            {
+                rec.t = t.max;
+                rec.p = r.at(rec.t);
+                const vec3 outward_normal = { 1.0, 0.0, 0.0 };
+                rec.set_face_normal(r, unit_vector(outward_normal));
+            }
+            
+
             return true;
         }
 

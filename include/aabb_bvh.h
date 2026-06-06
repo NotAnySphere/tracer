@@ -63,7 +63,8 @@ class aabb_bvh : public hittable {
         }
     
         bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
-            if (!bb.hit(r, ray_t, rec))
+          bool hit_bb = bb.hit(r, ray_t, rec);  
+          if (!hit_bb)
             {
                 // std::cout << "missed!" << std::endl;
                 return false;
@@ -80,6 +81,7 @@ class aabb_bvh : public hittable {
             {
                 right_hit = right.value()->hit(r, interval(ray_t.min, left_hit ? rec.t : ray_t.max ), rec);
             }  
+            //return left_hit || right_hit || hit_bb;
             return left_hit || right_hit;
         }
 
