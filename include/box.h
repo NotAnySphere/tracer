@@ -61,7 +61,7 @@ class box : public hittable {
             return compare(a, b, 2);
         }
 
-        bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
+        bool hit_wire(const ray& r, interval ray_t, hit_record& rec) const {
             interval x_t = interval::from((p1.x() - r.origin().x())/r.direction().x(),
                                           (p2.x() - r.origin().x())/r.direction().x());
             interval y_t = interval::from((p1.y() - r.origin().y())/r.direction().y(),
@@ -77,14 +77,32 @@ class box : public hittable {
             }
             
             // detect if we hit edge
-            if (t.size() < 0.01)
+            if (t.size() < 0.001)
             {
                 rec.t = t.max;
                 rec.p = r.at(rec.t);
                 const vec3 outward_normal = { 1.0, 0.0, 0.0 };
                 rec.set_face_normal(r, unit_vector(outward_normal));
+                return true;
             }
             
+            return false;
+        }
+
+        bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
+            interval x_t = interval::from((p1.x() - r.origin().x())/r.direction().x(),
+                                          (p2.x() - r.origin().x())/r.direction().x());
+            interval y_t = interval::from((p1.y() - r.origin().y())/r.direction().y(),
+                                          (p2.y() - r.origin().y())/r.direction().y());
+            interval z_t = interval::from((p1.z() - r.origin().z())/r.direction().z(),
+                                          (p2.z() - r.origin().z())/r.direction().z());
+            
+            interval t = x_t.intersection(y_t).intersection(z_t);
+                   
+            if (t.size() < std::numeric_limits<double>::epsilon() || !ray_t.contains(t.min))
+            {
+                return false;
+            }
 
             return true;
         }

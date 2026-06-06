@@ -13,6 +13,8 @@
 #include <algorithm>
 #include <optional>
 
+#define WIRE true
+
 using std::optional;
 
 class aabb_bvh : public hittable {
@@ -63,8 +65,7 @@ class aabb_bvh : public hittable {
         }
     
         bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
-          bool hit_bb = bb.hit(r, ray_t, rec);  
-          if (!hit_bb)
+          if (!bb.hit(r, ray_t, rec))
             {
                 // std::cout << "missed!" << std::endl;
                 return false;
@@ -74,15 +75,23 @@ class aabb_bvh : public hittable {
 
             bool left_hit = false;
             bool right_hit = false;
+            
+            #if WIRE
+            bool wire_hit = bb.hit_wire(r, ray_t, rec);
+            #endif
 
             left_hit = left->hit(r, interval(ray_t.min, ray_t.max), rec);        
             
             if (right.has_value())
             {
                 right_hit = right.value()->hit(r, interval(ray_t.min, left_hit ? rec.t : ray_t.max ), rec);
-            }  
-            //return left_hit || right_hit || hit_bb;
+            }
+
+            #if WIRE 
+            return left_hit || right_hit || wire_hit;
+            #else
             return left_hit || right_hit;
+            #endif 
         }
 
         box aabb() const override {

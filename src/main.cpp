@@ -96,11 +96,11 @@ int main(int argv, char** args) {
 
     // Camera
     // right, up, back
-    int WINDOW_WIDTH = 2160;
+    int WINDOW_WIDTH = 2160 * 3;
     double ASPECT_RATIO = 16.0 / 10.0;
 
     auto cam = camera(WINDOW_WIDTH, ASPECT_RATIO, 1, make_unique<unit_sampler>());
-    cam.translate(vec3(0, 0.3, 0.6));
+    cam.translate(vec3(0, 0.1, 0.2));
 
     // Render
     SDL_Window *window;
