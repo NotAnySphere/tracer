@@ -1,9 +1,8 @@
 https://raytracing.github.io/books/RayTracingInOneWeekend.html#outputanimage/theppmimageformat
 
 TODO:
-    - Z order curve thingymabob?
+    - Z order curve thingymabob? kan bvh creation versnellen
     - arena allocation weghalen uit de bvh
     - manier om camera pos te halen uit interactive mode
     - tracing op gpu doen
-    - wireframe van bvh toelaten
-    - Don't boot up SDL_VIDEO when just writing image
+    - wireframe verbeteren
