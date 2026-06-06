@@ -74,17 +74,6 @@ int main(int argv, char** args) {
         }
     }
 
-    /*
-    bunnies.push_back(new sphere(point3(0,0,-1), 0.5));
-    bunnies.push_back(new sphere(point3(0.5,1.5,-3), 0.4));
-    bunnies.push_back(new sphere(point3(0,-100.5,-1), 100));
-   
-    std::array<point3, 3> verts = { point3(0,0,-1), point3(-1,1,-1), point3(-2,-1,-1) };
-    bunnies.push_back(new tri(verts));
-
-    */
-    
-
     pool.join();
     auto alloc = arena(4096);
     std::cout << "joined input... "<< "\n";
