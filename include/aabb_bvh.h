@@ -13,7 +13,7 @@
 #include <algorithm>
 #include <optional>
 
-#define WIRE true
+#define WIRE false
 
 using std::optional;
 

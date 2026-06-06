@@ -63,7 +63,7 @@ int main(int argv, char** args) {
             auto task = [&](size_t i, size_t j) {
                 auto alloc = std::make_unique<arena>(512);
                 std::cout << "reading bunny "<< (i * col) + j << "\n";
-                auto bunny = load("./models/test.obj", alloc.get());
+                auto bunny = load("./models/bunny.obj", alloc.get());
                 bunny.translate_by({((double)i) / 5.0,
                 0,
                 ((double)j) / 5.0});
@@ -96,7 +96,7 @@ int main(int argv, char** args) {
 
     // Camera
     // right, up, back
-    int WINDOW_WIDTH = 2160 * 3;
+    int WINDOW_WIDTH = 2160;
     double ASPECT_RATIO = 16.0 / 10.0;
 
     auto cam = camera(WINDOW_WIDTH, ASPECT_RATIO, 1, make_unique<unit_sampler>());
